@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom'
+import MainRouter from '../router/MainRouter';
 import Link from '@material-ui/core/Link';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -26,6 +27,7 @@ import ComputerIcon from '@material-ui/icons/Computer';
 
 const drawerWidth = 240;
 
+// ------------------------- Style -----------------------------
 const styles = theme => ({
   root: {
     display: 'flex',
@@ -86,15 +88,19 @@ const styles = theme => ({
   },
 });
 
-class Sidebar extends React.Component {
+
+// ----------------------- Class -----------------------------
+class Main extends React.Component {
   state = {
     open: false,
   };
 
+  // SideBar 상태 관리
   handleDrawerOpen = () => {
     this.setState({ open: true });
   };
 
+  // SideBar 상태 관리
   handleDrawerClose = () => {
     this.setState({ open: false });
   };
@@ -120,6 +126,7 @@ class Sidebar extends React.Component {
             <Button color="inherit">Login</Button>
           </Toolbar>
         </AppBar>
+
         <Drawer className={classes.drawer} variant="persistent" anchor="left" open={open} classes={{ paper: classes.drawerPaper, }}>
           <div className={classes.drawerHeader}>
             <IconButton onClick={this.handleDrawerClose}>
@@ -136,12 +143,12 @@ class Sidebar extends React.Component {
                 <ListItemText primary={"Home"} />
               </ListItem>
             </Link>
-            <Link component={RouterLink} exact to="/about">
-              <ListItem button key={"about"}>
+            <Link component={RouterLink} exact to="/equipment">
+              <ListItem button key={"equipment"}>
                 <ListItemIcon>
                   <ComputerIcon />
                 </ListItemIcon>
-                <ListItemText primary={"About"} />
+                <ListItemText primary={"장비 관리"} />
               </ListItem>
             </Link>
             <Link component={RouterLink} to="/about/foo">
@@ -149,7 +156,7 @@ class Sidebar extends React.Component {
                 <ListItemIcon>
                   <GroupIcon />
                 </ListItemIcon>
-                <ListItemText primary={"Foo"} />
+                <ListItemText primary={"직원 목록"} />
               </ListItem>
             </Link>
             <Link component={RouterLink} to="/posts">
@@ -163,41 +170,19 @@ class Sidebar extends React.Component {
           </List>
           <Divider />
         </Drawer>
+
         <main className={classNames(classes.content, { [classes.contentShift]: open, })}>
           <div className={classes.drawerHeader} />
-          <Typography paragraph>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent
-            elementum facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in
-            hendrerit gravida rutrum quisque non tellus. Convallis convallis tellus id interdum
-            velit laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing.
-            Amet nisl suscipit adipiscing bibendum est ultricies integer quis. Cursus euismod quis
-            viverra nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum leo.
-            Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus
-            at augue. At augue eget arcu dictum varius duis at consectetur lorem. Velit sed
-            ullamcorper morbi tincidunt. Lorem donec massa sapien faucibus et molestie ac.
-          </Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
-            facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
-            tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
-            consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus
-            sed vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in.
-            In hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-            et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique
-            sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo
-            viverra maecenas accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
-            ultrices sagittis orci a.
-          </Typography>
+            <MainRouter />
         </main>
       </div>
     );
   }
 }
 
-Sidebar.propTypes = {
+Main.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(Sidebar);
+export default withStyles(styles, { withTheme: true })(Main);
