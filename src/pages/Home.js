@@ -1,15 +1,15 @@
 import React from 'react';
-import EquipmentCard from '../components/EquipmentCard';
+import CommonLayout from '../components/common/CommonLayout';
+import HomePage from '../components/largeParts/HomePage';
 
-const Home = () => {
+class Home extends React.Component {
+  render() {
     return (
-        <div>
-            <h2>요청 장비 목록</h2>
-            <EquipmentCard requestCard={true}/>
-            <h2>나의 장비 목록</h2>
-            <EquipmentCard />
-        </div>
-    )
+      <CommonLayout>
+        <HomePage />
+      </CommonLayout>
+    );
+  }
 }
 
 export default Home;

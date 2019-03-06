@@ -1,19 +1,16 @@
 import React from 'react';
-import queryString from 'query-string';
-import EquipmentCard from '../components/EquipmentCard';
-import SelectController from '../components/SelectController'
+// import queryString from 'query-string';
+import CommonLayout from '../components/common/CommonLayout';
+import EquipmentPage from '../components/largeParts/EquipmentPage';
 
-const Equipment = ({location, match}) => {
-    // const query = queryString.parse(location.search);
-    // const detail = query.detail === 'true';
-
+class Equipment extends React.Component {
+  render() {
     return (
-        <div>
-            <h2>장비 관리</h2>
-            <SelectController />
-            <EquipmentCard/>
-        </div>
-    )
+      <CommonLayout>
+        <EquipmentPage />
+      </CommonLayout>
+    );
+  }
 }
 
 export default Equipment;
