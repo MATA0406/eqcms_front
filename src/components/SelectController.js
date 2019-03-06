@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import InputBase from '@material-ui/core/InputBase';
+import Grid from '@material-ui/core/Grid';
+
 
 const BootstrapInput = withStyles(theme => ({
   root: {
@@ -71,48 +71,56 @@ class CustomizedSelects extends React.Component {
 
     return (
       <form className={classes.root} autoComplete="off">
-        <FormControl className={classes.margin}>
-          <InputLabel htmlFor="age-customized-native-simple" className={classes.bootstrapFormLabel}>
-            장비 구분
-          </InputLabel>
-          <NativeSelect value={this.state.age} onChange={this.handleChange} input={<BootstrapInput name="age" id="age-customized-native-simple" />}>
-            <option value="" />
-            <option value={10}>Ten</option>
-            <option value={20}>Twenty</option>
-            <option value={30}>Thirty</option>
-          </NativeSelect>
-        </FormControl>
+        <Grid container spacing={24}>
+          
+          
+          <Grid item xs={12} sm={3}>
+          <FormControl className={classes.margin}>
+            <InputLabel htmlFor="age-customized-native-simple" className={classes.bootstrapFormLabel}>
+              장비 구분
+            </InputLabel>
+            <NativeSelect value={this.state.age} onChange={this.handleChange} input={<BootstrapInput name="age" id="age-customized-native-simple" />}>
+              <option value="" />
+              <option value={10}>Ten</option>
+              <option value={20}>Twenty</option>
+              <option value={30}>Thirty</option>
+            </NativeSelect>
+          </FormControl>
 
-        <FormControl className={classes.margin}>
-          <InputLabel htmlFor="age-customized-native-simple" className={classes.bootstrapFormLabel}>
-            장비 상태
-          </InputLabel>
-          <NativeSelect value={this.state.age} onChange={this.handleChange} input={<BootstrapInput name="age" id="age-customized-native-simple" />}>
-            <option value="" />
-            <option value={10}>Ten</option>
-            <option value={20}>Twenty</option>
-            <option value={30}>Thirty</option>
-          </NativeSelect>
-        </FormControl>
+          </Grid>
 
-        <FormControl className={classes.margin}>
-          <InputLabel htmlFor="age-customized-native-simple" className={classes.bootstrapFormLabel}>
-            요청 상태
-          </InputLabel>
-          <NativeSelect value={this.state.age} onChange={this.handleChange} input={<BootstrapInput name="age" id="age-customized-native-simple" />}>
-            <option value="" />
-            <option value={10}>Ten</option>
-            <option value={20}>Twenty</option>
-            <option value={30}>Thirty</option>
-          </NativeSelect>
-        </FormControl>
+          <FormControl className={classes.margin}>
+            <InputLabel htmlFor="age-customized-native-simple" className={classes.bootstrapFormLabel}>
+              장비 상태
+            </InputLabel>
+            <NativeSelect value={this.state.age} onChange={this.handleChange} input={<BootstrapInput name="age" id="age-customized-native-simple" />}>
+              <option value="" />
+              <option value={10}>Ten</option>
+              <option value={20}>Twenty</option>
+              <option value={30}>Thirty</option>
+            </NativeSelect>
+          </FormControl>
 
-        <FormControl className={classes.margin}>
-          <InputLabel htmlFor="age-customized-select" className={classes.bootstrapFormLabel}>
-            장비 구분
-          </InputLabel>
-          <BootstrapInput />
-        </FormControl>
+          <FormControl className={classes.margin}>
+            <InputLabel htmlFor="age-customized-native-simple" className={classes.bootstrapFormLabel}>
+              요청 상태
+            </InputLabel>
+            <NativeSelect value={this.state.age} onChange={this.handleChange} input={<BootstrapInput name="age" id="age-customized-native-simple" />}>
+              <option value="" />
+              <option value={10}>Ten</option>
+              <option value={20}>Twenty</option>
+              <option value={30}>Thirty</option>
+            </NativeSelect>
+          </FormControl>
+
+          <FormControl className={classes.margin}>
+            <InputLabel htmlFor="age-customized-select" className={classes.bootstrapFormLabel}>
+              장비 구분
+            </InputLabel>
+            <BootstrapInput />
+          </FormControl>
+          
+        </Grid>
       </form>
     );
   }
