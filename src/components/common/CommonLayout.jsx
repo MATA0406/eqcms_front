@@ -3,8 +3,8 @@ import React from 'react';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 
-import Header from './Header';
-import SideBar from './SideBar';
+import Header from 'components/common/Header';
+import SideBar from 'components/common/SideBar';
 
 const drawerWidth = 240;
 

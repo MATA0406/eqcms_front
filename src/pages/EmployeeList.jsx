@@ -1,7 +1,7 @@
 import React from 'react';
 
-import CommonLayout from '../components/common/CommonLayout';
-import EmployeeListPage from '../components/largeParts/EmployeeListPage';
+import CommonLayout from 'components/common/CommonLayout';
+import EmployeeListPage from 'components/largeParts/EmployeeListPage';
 
 class EmployeeList extends React.Component {
   render() {
