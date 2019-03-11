@@ -1,4 +1,6 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -8,6 +10,8 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+
+import { goLogout } from 'store/modules/login';
 
 const drawerWidth = 240;
 
@@ -39,6 +43,10 @@ const styles = theme => ({
 });
 
 class Header extends React.Component {
+  logout = () => {
+    this.props.goLogout();
+  };
+
   render() {
     const { classes, open, handleDrawerOpen } = this.props;
 
@@ -65,13 +73,27 @@ class Header extends React.Component {
             EQCMS
           </Typography>
           <Typography variant="h6" color="inherit" noWrap>
-            정진호
+            {localStorage.getItem('login_nm')}
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" onClick={this.logout}>
+            LogOut
+          </Button>
         </Toolbar>
       </AppBar>
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(Header);
+// action을 dispatch하는 펑션을 로컬에 있는 props로 매핑
+const mapActionToProps = dispatch => {
+  return {
+    goLogout: userInfo => dispatch(goLogout(userInfo)),
+  };
+};
+
+export default withStyles(styles)(
+  connect(
+    null,
+    mapActionToProps,
+  )(withRouter(Header)),
+);

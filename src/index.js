@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 // **** createStore 와 루트 리듀서 불러오기
 import { createStore } from 'redux';
-import rootReducer from 'store/modules';
+import combineReducers from 'store/modules/index';
 
 // **** Provider 불러오기
 import { Provider } from 'react-redux';
@@ -18,7 +18,7 @@ const devTools =
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
 
 // **** 스토어를 만들고 현재 값 확인해보기
-const store = createStore(rootReducer, devTools);
+const store = createStore(combineReducers, devTools);
 
 // **** 렌더링해서 기존의 App 감싸주기
 ReactDOM.render(

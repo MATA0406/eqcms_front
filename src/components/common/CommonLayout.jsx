@@ -1,5 +1,8 @@
 import React from 'react';
 
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -42,6 +45,20 @@ class CommonLayout extends React.Component {
     open: false,
   };
 
+  // render로 컴포넌트를 DOM에 부착한 후 Mount가 완료된 후
+  componentDidMount() {
+    if (!localStorage.getItem('access_token')) {
+      this.props.history.push('/login');
+    }
+  }
+
+  // 업데이트가 일어난 후 render하기 전
+  componentWillUpdate() {
+    if (!localStorage.getItem('access_token')) {
+      this.props.history.push('/login');
+    }
+  }
+
   // SideBar 상태 관리
   handleDrawerOpen = () => {
     this.setState({ open: true });
@@ -53,12 +70,16 @@ class CommonLayout extends React.Component {
   };
 
   render() {
-    const { classes, theme, children } = this.props;
+    const { classes, theme, children, login_info } = this.props;
     const { open } = this.state;
 
     return (
       <div className={classes.root}>
-        <Header open={open} handleDrawerOpen={this.handleDrawerOpen} />
+        <Header
+          open={open}
+          handleDrawerOpen={this.handleDrawerOpen}
+          login_nm={login_info.login_nm}
+        />
 
         <SideBar
           open={open}
@@ -79,4 +100,13 @@ class CommonLayout extends React.Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(CommonLayout);
+// store에 있는 값을 props로 내려받는다.
+const mapStateToProps = state => {
+  return {
+    login_info: state.loginReducer.login_info,
+  };
+};
+
+export default withStyles(styles)(
+  connect(mapStateToProps)(withRouter(CommonLayout)),
+);

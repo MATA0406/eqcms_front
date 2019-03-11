@@ -1,34 +1,56 @@
 import React from 'react';
-
 import { withRouter } from 'react-router-dom';
-
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-//import PropTypes from 'prop-types';
-//import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+
+import { goLogin } from 'store/modules/login';
 
 const styles = theme => ({
-  container: {
+  main: {
+    width: 'auto',
+    display: 'block', // Fix IE 11 issue.
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+      width: 400,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
+  paper: {
+    marginTop: theme.spacing.unit * 30,
     display: 'flex',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`,
   },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 200,
+  avatar: {
+    margin: theme.spacing.unit,
+    backgroundColor: theme.palette.secondary.main,
   },
-  dense: {
-    marginTop: 19,
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing.unit,
   },
-  menu: {
-    width: 200,
+  submit: {
+    marginTop: theme.spacing.unit * 3,
   },
 });
 
 class Login extends React.Component {
+  // 로그인 버튼 클릭
   submit = event => {
     event.preventDefault();
 
@@ -37,67 +59,104 @@ class Login extends React.Component {
       login_pw: event.target.login_pw.value,
     };
 
-    const myHeaders = new Headers({
-      'Content-Type': 'application/json',
-    });
-
-    const data = {
+    // 로그인 중복 확인
+    fetch('http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0001', {
       method: 'POST',
-      headers: myHeaders,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(userInfo),
-    };
-
-    fetch(
-      'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
-      data,
-    )
+    })
       .then(response => response.json())
-      .then(json => {
-        console.log(json.data.login_info.access_token);
-        localStorage.setItem('access_token', json.data.login_info.access_token);
-        this.goPage('/');
-        //this.props.history.push('/');
-      }) // 화살표 fucntion은 return을 작성할 필요가 없다.(자동!)
-      .catch(err => console.log(err));
-  };
-
-  goPage = url => {
-    this.props.history.push(url);
+      .then(() => {
+        // 로그인
+        fetch(
+          'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userInfo),
+          },
+        )
+          .then(response => response.json())
+          .then(json => {
+            localStorage.setItem(
+              'access_token',
+              json.data.login_info.access_token,
+            );
+            localStorage.setItem('login_nm', json.data.login_info.login_nm);
+            this.props.goLogin(json.data.login_info);
+            this.props.history.push('/');
+          })
+          .catch(err => alert(err.message));
+      })
+      .catch(err => alert(err.message));
   };
 
   render() {
-    const { classes, login_id, login_pw } = this.props;
+    const { classes } = this.props;
 
     return (
-      <form
-        className={classes.container}
-        noValidate
-        autoComplete="off"
-        onSubmit={this.submit}
-      >
-        <TextField
-          id="login_id"
-          name="login_id"
-          label="Name"
-          className={classes.textField}
-          value={'test1@test.com'}
-          margin="normal"
-        />
-        <TextField
-          id="login_pw"
-          name="login_pw"
-          label="Name"
-          className={classes.textField}
-          value={1111}
-          margin="normal"
-        />
-        <Button type="submit" variant="contained" className={classes.button}>
-          Default
-        </Button>
-      </form>
+      <main className={classes.main}>
+        <CssBaseline />
+        <Paper className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <form className={classes.form} onSubmit={this.submit}>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="email">Email Address</InputLabel>
+              <Input
+                id="login_id"
+                name="login_id"
+                autoComplete="email"
+                autoFocus
+              />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="password">Password</InputLabel>
+              <Input
+                name="login_pw"
+                type="password"
+                id="login_pw"
+                autoComplete="current-password"
+              />
+            </FormControl>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign in
+            </Button>
+          </form>
+        </Paper>
+      </main>
     );
   }
 }
-export default withStyles(styles)(connect()(withRouter(Login)));
-//export default connet()withStyles(styles)(withRouter(Login));
-//export default connect()(withRouter(Login))(withStyles(styles)(Login));
+
+Login.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+// action을 dispatch하는 펑션을 로컬에 있는 props로 매핑
+const mapActionToProps = dispatch => {
+  return {
+    goLogin: userInfo => dispatch(goLogin(userInfo)),
+  };
+};
+
+export default withStyles(styles)(
+  connect(
+    null,
+    mapActionToProps,
+  )(withRouter(Login)),
+);

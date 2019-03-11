@@ -1,6 +1,7 @@
 // ------------------------ 액션 타입 정의 ----------------------------
 const CHECK_LOGIN = 'login/CHECK_LOGIN';
-const LOGIN = 'login/LOGIN';
+const GO_LOGIN = 'login/GO_LOGIN';
+const GO_LOGOUT = 'login/GO_LOGOUT';
 
 // ---------------------- 액션 생성함수 정의 --------------------------
 export const checkLogin = login_info => ({
@@ -8,7 +9,11 @@ export const checkLogin = login_info => ({
   login_info,
 });
 export const goLogin = login_info => ({
-  type: LOGIN,
+  type: GO_LOGIN,
+  login_info,
+});
+export const goLogout = login_info => ({
+  type: GO_LOGOUT,
   login_info,
 });
 
@@ -23,12 +28,18 @@ export default function loginReducer(state = initialState, action) {
     case CHECK_LOGIN:
       return {
         ...state,
-        login_info: state.login_info,
+        login_info: action.login_info,
       };
-    case LOGIN:
+    case GO_LOGIN:
       return {
         ...state,
-        login_info: state.login_info,
+        login_info: action.login_info,
+      };
+    case GO_LOGOUT:
+      localStorage.clear();
+      return {
+        ...state,
+        login_info: {},
       };
     default:
       return state;

@@ -4,9 +4,9 @@ const GET_MY_EQUIPMENT = 'home/GET_MY_EQUIPMENT';
 const GET_REQ_TARGET_EQUIPMENT = 'home/GET_REQ_TARGET_EQUIPMENT';
 
 // ---------------------- 액션 생성함수 정의 --------------------------
-export const get_req_equipment = () => ({ type: GET_REQ_EQUIPMENT });
-export const get_my_equipment = () => ({ type: GET_MY_EQUIPMENT });
-export const get_req_target_equipment = (page, rows, search_info) => ({
+export const getReqEquipment = () => ({ type: GET_REQ_EQUIPMENT });
+export const getMyEquipment = () => ({ type: GET_MY_EQUIPMENT });
+export const getReqTargetEquipment = (page, rows, search_info) => ({
   type: GET_REQ_TARGET_EQUIPMENT,
   page,
   rows,
@@ -15,25 +15,26 @@ export const get_req_target_equipment = (page, rows, search_info) => ({
 
 // ---------------------- 초기 상태 정의 --------------------------
 const initialState = {
+  req_equip_list: {},
   page: 1,
   rows: 20,
-  search_info: false,
+  search_info: '',
 };
 
 // ---------------------- 리듀서 작성 --------------------------
 export default function home(state = initialState, action) {
   switch (action.type) {
-    case get_req_equipment:
+    case GET_REQ_EQUIPMENT:
       return {
         ...state,
-        page: action.page,
+        req_equip_list: action.page,
       };
-    case get_my_equipment:
+    case GET_MY_EQUIPMENT:
       return {
         ...state,
-        page: action.page,
+        req_equip_list: action.page,
       };
-    case get_req_target_equipment:
+    case GET_REQ_TARGET_EQUIPMENT:
       return {
         ...state,
         page: action.page,
