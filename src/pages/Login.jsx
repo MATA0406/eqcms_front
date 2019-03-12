@@ -3,6 +3,8 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import axios from 'axios';
+
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
@@ -59,40 +61,87 @@ class Login extends React.Component {
       login_pw: event.target.login_pw.value,
     };
 
-    // 로그인 중복 확인
-    fetch('http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0001', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userInfo),
-    })
-      .then(response => response.json())
-      .then(() => {
-        // 로그인
-        fetch(
-          'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userInfo),
-          },
-        )
-          .then(response => response.json())
-          .then(json => {
-            localStorage.setItem(
-              'access_token',
-              json.data.login_info.access_token,
-            );
-            localStorage.setItem('login_nm', json.data.login_info.login_nm);
-            this.props.goLogin(json.data.login_info);
-            this.props.history.push('/');
-          })
-          .catch(err => alert(err.message));
+    // ------------------------------------------------------------------------------
+    axios
+      .post(
+        'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
+        userInfo,
+      )
+      .then(response => response)
+      .then(item => {
+        console.log('item :: ', item);
+        localStorage.setItem(
+          'access_token',
+          item.data.data.login_info.access_token,
+        );
+        localStorage.setItem('login_nm', item.data.data.login_info.login_nm);
+        this.props.goLogin(item.data.data.login_info);
+        this.props.history.push('/');
       })
-      .catch(err => alert(err.message));
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    // axios
+    //   .post(
+    //     'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0001',
+    //     userInfo,
+    //   )
+    //   .then(response => response.json())
+    //   .then(() => {
+    //     axios
+    //       .post(
+    //         'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
+    //         userInfo,
+    //       )
+    //       .then(response => response.json())
+    //       .then(item => console.log(item))
+    //       .catch(function(error) {
+    //         console.log(error);
+    //       });
+    //   })
+    //   .then(response => response.json())
+    //   .then(item => console.log(item))
+    //   .catch(function(error) {
+    //     console.log(error);
+    //   });
+
+    // ------------------------------------------------------------------------------
+
+    // 로그인 중복 확인
+    // fetch('http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0001', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(userInfo),
+    // })
+    //   .then(response => response.json())
+    //   .then(() => {
+    // 로그인
+    //   fetch(
+    //     'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
+    //     {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify(userInfo),
+    //     },
+    //   )
+    //     .then(response => response.json())
+    //     .then(json => {
+    //       localStorage.setItem(
+    //         'access_token',
+    //         json.data.login_info.access_token,
+    //       );
+    //       localStorage.setItem('login_nm', json.data.login_info.login_nm);
+    //       this.props.goLogin(json.data.login_info);
+    //       this.props.history.push('/');
+    //     })
+    //     .catch(err => alert(err.message));
+    // })
+    // .catch(err => alert(err.message));
   };
 
   render() {

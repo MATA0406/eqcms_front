@@ -70,16 +70,12 @@ class CommonLayout extends React.Component {
   };
 
   render() {
-    const { classes, theme, children, login_info } = this.props;
+    const { classes, theme, children } = this.props;
     const { open } = this.state;
 
     return (
       <div className={classes.root}>
-        <Header
-          open={open}
-          handleDrawerOpen={this.handleDrawerOpen}
-          login_nm={login_info.login_nm}
-        />
+        <Header open={open} handleDrawerOpen={this.handleDrawerOpen} />
 
         <SideBar
           open={open}
