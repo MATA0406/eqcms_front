@@ -52,6 +52,10 @@ const styles = theme => ({
 });
 
 class Login extends React.Component {
+  componentDidMount() {
+    localStorage.clear();
+  }
+
   // 로그인 버튼 클릭
   submit = event => {
     event.preventDefault();
@@ -62,14 +66,17 @@ class Login extends React.Component {
     };
 
     // ------------------------------------------------------------------------------
+
+    // 중복 로그인 체크
+
+    // 로그인
     axios
       .post(
         'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
         userInfo,
       )
-      .then(response => response)
       .then(item => {
-        console.log('item :: ', item);
+        console.log('Login item :: ', item);
         localStorage.setItem(
           'access_token',
           item.data.data.login_info.access_token,
@@ -78,70 +85,9 @@ class Login extends React.Component {
         this.props.goLogin(item.data.data.login_info);
         this.props.history.push('/');
       })
-      .catch(function(error) {
-        console.log(error);
+      .catch(function(err) {
+        alert(err.response.data.message);
       });
-
-    // axios
-    //   .post(
-    //     'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0001',
-    //     userInfo,
-    //   )
-    //   .then(response => response.json())
-    //   .then(() => {
-    //     axios
-    //       .post(
-    //         'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
-    //         userInfo,
-    //       )
-    //       .then(response => response.json())
-    //       .then(item => console.log(item))
-    //       .catch(function(error) {
-    //         console.log(error);
-    //       });
-    //   })
-    //   .then(response => response.json())
-    //   .then(item => console.log(item))
-    //   .catch(function(error) {
-    //     console.log(error);
-    //   });
-
-    // ------------------------------------------------------------------------------
-
-    // 로그인 중복 확인
-    // fetch('http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0001', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(userInfo),
-    // })
-    //   .then(response => response.json())
-    //   .then(() => {
-    // 로그인
-    //   fetch(
-    //     'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
-    //     {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify(userInfo),
-    //     },
-    //   )
-    //     .then(response => response.json())
-    //     .then(json => {
-    //       localStorage.setItem(
-    //         'access_token',
-    //         json.data.login_info.access_token,
-    //       );
-    //       localStorage.setItem('login_nm', json.data.login_info.login_nm);
-    //       this.props.goLogin(json.data.login_info);
-    //       this.props.history.push('/');
-    //     })
-    //     .catch(err => alert(err.message));
-    // })
-    // .catch(err => alert(err.message));
   };
 
   render() {

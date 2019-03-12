@@ -44,7 +44,9 @@ const styles = theme => ({
 
 class Header extends React.Component {
   logout = () => {
-    this.props.goLogout();
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      this.props.goLogout();
+    }
   };
 
   render() {
