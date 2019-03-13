@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -45,7 +46,24 @@ const styles = theme => ({
 class Header extends React.Component {
   logout = () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
-      this.props.goLogout();
+      // 로그인
+      axios
+        .post(
+          'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0003',
+          {},
+          {
+            headers: {
+              access_token: localStorage.getItem('access_token'),
+            },
+          },
+        )
+        .then(item => {
+          console.log('Logout :: ', item);
+          this.props.goLogout();
+        })
+        .catch(function(err) {
+          alert(err.response.data.message);
+        });
     }
   };
 

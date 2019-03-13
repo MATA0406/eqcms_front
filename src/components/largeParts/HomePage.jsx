@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 
 import EquipmentCard from 'components/middleParts/EquipmentCard';
 
-import { getReqEquipment } from 'store/modules/home';
+import { getReqEquipment, getMyEquipment } from 'store/modules/home';
 
 const styles = {
   requestEquipmentList: {
@@ -24,7 +24,6 @@ const styles = {
 class HomePage extends React.Component {
   componentDidMount() {
     this.f_getReqEquipment();
-    console.log('1111112222');
   }
 
   // 요청 장비 목록 조회
@@ -49,6 +48,48 @@ class HomePage extends React.Component {
       .then(json => {
         localStorage.setItem('access_token', json.data.data.access_token);
         this.props.getReqEquipment(json.data.data.req_equip_list);
+        console.log('api-200-0001 :: ', json);
+
+        // 나의 장비 목록 조회API
+        this.f_getMyEquipment();
+      })
+      .catch(err => {
+        console.log(err.response.data);
+
+        // Token error List
+        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+        if (errCodes.indexOf(err.response.data.code) !== -1) {
+          alert(err.response.data.message);
+          this.props.history.push('/login');
+        } else {
+          alert(err.response.data.message);
+        }
+      });
+  };
+
+  // 나의 장비 목록 조회
+  f_getMyEquipment = async () => {
+    const params = {
+      access_token: localStorage.getItem('access_token'),
+    };
+
+    // 나의 장비 목록 조회API
+    await axios
+      .get(
+        'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/dashboard/api-200-0003',
+        {
+          params: {
+            params: JSON.stringify(params),
+          },
+          headers: {
+            'contents-type': 'application/json',
+          },
+        },
+      )
+      .then(json => {
+        localStorage.setItem('access_token', json.data.data.access_token);
+        this.props.getMyEquipment(json.data.data.my_equip_list);
         console.log('api-200-0003 :: ', json);
       })
       .catch(err => {
@@ -67,7 +108,7 @@ class HomePage extends React.Component {
   };
 
   render() {
-    const { classes, req_equip_list } = this.props;
+    const { classes, req_equip_list, my_equip_list } = this.props;
 
     return (
       <React.Fragment>
@@ -75,13 +116,26 @@ class HomePage extends React.Component {
           요청 장비 목록
         </Typography>
         {req_equip_list.length ? (
-          <EquipmentCard cardType="req_card" req_equip_list={req_equip_list} />
+          <EquipmentCard
+            history={this.props.history}
+            cardType="req_card"
+            equip_list={req_equip_list}
+          />
         ) : (
           ''
         )}
         <Typography className={classes.myEquipmentList}>
           나의 장비 목록
         </Typography>
+        {my_equip_list.length ? (
+          <EquipmentCard
+            history={this.props.history}
+            cardType="my_card"
+            equip_list={my_equip_list}
+          />
+        ) : (
+          ''
+        )}
       </React.Fragment>
     );
   }
@@ -91,6 +145,7 @@ class HomePage extends React.Component {
 const mapStateToProps = state => {
   return {
     req_equip_list: state.home.req_equip_list,
+    my_equip_list: state.home.my_equip_list,
   };
 };
 
@@ -99,6 +154,7 @@ const mapActionToProps = dispatch => {
   return {
     getReqEquipment: req_equip_list =>
       dispatch(getReqEquipment(req_equip_list)),
+    getMyEquipment: my_equip_list => dispatch(getMyEquipment(my_equip_list)),
   };
 };
 

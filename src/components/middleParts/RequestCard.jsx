@@ -13,6 +13,7 @@ const styles = {
   },
   card: {
     minWidth: 250,
+    minHeight: 253,
   },
   cssRoot: {
     color: '#ffffff',

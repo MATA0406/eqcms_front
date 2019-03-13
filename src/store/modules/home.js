@@ -8,7 +8,10 @@ export const getReqEquipment = req_equip_list => ({
   type: GET_REQ_EQUIPMENT,
   req_equip_list,
 });
-export const getMyEquipment = () => ({ type: GET_MY_EQUIPMENT });
+export const getMyEquipment = my_equip_list => ({
+  type: GET_MY_EQUIPMENT,
+  my_equip_list,
+});
 export const getReqTargetEquipment = (page, rows, search_info) => ({
   type: GET_REQ_TARGET_EQUIPMENT,
   page,

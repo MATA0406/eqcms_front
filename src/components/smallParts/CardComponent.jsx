@@ -20,66 +20,101 @@ const styles = {
   iconSize: {
     fontSize: 100,
   },
+  cardImg: {
+    width: 70,
+  },
 };
 
 function CardComponent(props) {
-  const { classes, _status, cardType, req_equip_list } = props;
-  console.log('req_equip_list :: ', req_equip_list);
+  const { classes, cardType, equip_info, history } = props;
 
   return (
     <Grid item xs={12} sm={2}>
-      <Card className={classes.card}>
-        <CardContent>
-          <Grid
-            container
-            direction="row"
-            justify="space-between"
-            alignItems="flex-start"
-          >
-            <Typography
-              className={classes.title}
-              color="textSecondary"
-              gutterBottom
+      {equip_info ? (
+        <Card className={classes.card}>
+          <CardContent>
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="flex-start"
             >
-              {req_equip_list.stat_cd_nm}
-            </Typography>
-            <Typography
-              className={classes.title}
-              color="textSecondary"
-              gutterBottom
+              <Typography
+                className={classes.title}
+                color="textSecondary"
+                gutterBottom
+              >
+                {cardType === 'my_card' ? '내장비' : equip_info.req_cd_nm}
+              </Typography>
+              <Typography
+                className={classes.title}
+                color="textSecondary"
+                gutterBottom
+              >
+                {equip_info.req_user_nm
+                  ? `${equip_info.user_nm} -> ${equip_info.req_user_nm}`
+                  : ''}
+              </Typography>
+            </Grid>
+            <Grid container xs={12} sm={12} alignItems="center">
+              <Grid
+                xs={4}
+                sm={4}
+                direction="row"
+                justify="flex-start"
+                alignItems="center"
+              >
+                <img
+                  className={classes.cardImg}
+                  src={`http://d3rg13r6ps3p6u.cloudfront.net${
+                    equip_info.equip_tp_img_url
+                  }`}
+                  alt=""
+                />
+              </Grid>
+              <Grid
+                xs={8}
+                sm={2}
+                direction="row"
+                justify="flex-start"
+                alignItems="center"
+              >
+                <Typography
+                  noWrap
+                  variant="h6"
+                  component="h2"
+                  title={equip_info.equip_nm}
+                >
+                  {equip_info.equip_nm}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              direction="row"
+              justify="space-evenly"
+              alignItems="center"
             >
-              {_status === 'ok'
-                ? `${req_equip_list.user_nm} -> ${req_equip_list.req_user_nm}`
-                : ''}
-            </Typography>
-          </Grid>
+              <Typography variant="h6">{equip_info.stat_cd_nm}</Typography>
+              <Typography variant="h6">{equip_info.user_nm}</Typography>
+            </Grid>
+          </CardContent>
           <Grid
             container
             direction="row"
-            justify="flex-start"
-            alignItems="center"
+            justify="center"
+            alignItems="flex-end"
           >
-            <ListItemIcon>
-              <ComputerIcon className={classes.iconSize} />
-            </ListItemIcon>
-            <Typography variant="h5" component="h2">
-              {req_equip_list.equip_nm}
-            </Typography>
+            <ButtonComponent
+              cardType={cardType}
+              equip_info={equip_info}
+              history={history}
+            />
           </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="space-evenly"
-            alignItems="center"
-          >
-            <Typography variant="h6">사용중</Typography>
-            <Typography variant="h6">{req_equip_list.user_nm}</Typography>
-          </Grid>
-        </CardContent>
-        <Grid container direction="row" justify="center" alignItems="flex-end">
-          <ButtonComponent req_equip_list={req_equip_list} />
-        </Grid>
-      </Card>
+        </Card>
+      ) : (
+        ''
+      )}
     </Grid>
   );
 }
