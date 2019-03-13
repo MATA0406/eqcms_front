@@ -12,7 +12,7 @@ const styles = {
     flexGrow: 1,
   },
   card: {
-    minWidth: 250,
+    width: '100%',
     minHeight: 253,
   },
   cssRoot: {
@@ -28,7 +28,7 @@ function RequestCard(props) {
   const { classes } = props;
 
   return (
-    <Grid item xs={12} sm={2}>
+    <Grid container item xs={12} sm={6} md={4} lg={3} xl={2}>
       <Card className={classes.card}>
         <Grid
           container

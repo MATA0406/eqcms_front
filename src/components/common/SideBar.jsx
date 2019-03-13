@@ -58,7 +58,7 @@ class SideBar extends React.Component {
         </div>
         <Divider />
         <List>
-          <Link component={RouterLink} exact to="/">
+          <Link component={RouterLink} to="/">
             <ListItem button key="home">
               <ListItemIcon>
                 <HomeIcon />
@@ -66,7 +66,7 @@ class SideBar extends React.Component {
               <ListItemText primary="Home" />
             </ListItem>
           </Link>
-          <Link component={RouterLink} exact to="/equipment">
+          <Link component={RouterLink} to="/equipment">
             <ListItem button key="equipment">
               <ListItemIcon>
                 <ComputerIcon />

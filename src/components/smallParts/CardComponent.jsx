@@ -5,14 +5,13 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ComputerIcon from '@material-ui/icons/Computer';
 
 import ButtonComponent from './ButtonComponent';
 
 const styles = {
   card: {
-    minWidth: 275,
+    minHeight: 262,
+    width: '100%',
   },
   title: {
     fontSize: 16,
@@ -29,7 +28,7 @@ function CardComponent(props) {
   const { classes, cardType, equip_info, history } = props;
 
   return (
-    <Grid item xs={12} sm={2}>
+    <Grid container item xs={12} sm={6} md={4} lg={3} xl={2}>
       {equip_info ? (
         <Card className={classes.card}>
           <CardContent>
@@ -56,13 +55,15 @@ function CardComponent(props) {
                   : ''}
               </Typography>
             </Grid>
-            <Grid container xs={12} sm={12} alignItems="center">
+            <Grid container alignItems="center">
               <Grid
+                container
+                item
                 xs={4}
-                sm={4}
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
+                zeroMinWidth
               >
                 <img
                   className={classes.cardImg}
@@ -73,11 +74,14 @@ function CardComponent(props) {
                 />
               </Grid>
               <Grid
+                container
+                item
                 xs={8}
-                sm={2}
+                wrap="nowrap"
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
+                zeroMinWidth
               >
                 <Typography
                   noWrap
