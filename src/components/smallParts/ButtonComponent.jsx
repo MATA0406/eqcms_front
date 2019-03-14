@@ -107,7 +107,7 @@ function ButtonComponent(props) {
         localStorage.setItem('access_token', item.data.data.access_token);
         window.location.reload();
       })
-      .catch(function(err) {
+      .catch(err => {
         console.log('err ', err.response.data);
 
         // Token error List

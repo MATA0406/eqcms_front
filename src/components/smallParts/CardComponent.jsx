@@ -77,7 +77,6 @@ function CardComponent(props) {
                 container
                 item
                 xs={8}
-                wrap="nowrap"
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
