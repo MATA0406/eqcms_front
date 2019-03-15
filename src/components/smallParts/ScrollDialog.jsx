@@ -6,10 +6,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Divider from '@material-ui/core/Divider';
 
 // SelectBox
 import { withStyles } from '@material-ui/core/styles';
-import InputBase from '@material-ui/core/InputBase';
 import TextField from '@material-ui/core/TextField';
 
 // Text
@@ -37,12 +37,23 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
+    width: '100%',
   },
   dense: {
     marginTop: 16,
   },
   menu: {
     width: 200,
+  },
+  searchBtn: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: '100%',
+    height: '55px',
+    marginTop: '7px',
+  },
+  dialogAttr: {
+    width: 700,
   },
 });
 
@@ -53,53 +64,90 @@ class ScrollDialog extends React.Component {
     return (
       <div>
         <Dialog
+          maxWidth="sm"
+          fullWidth
           open={open}
           onClose={handleClose}
           scroll={scroll}
           aria-labelledby="scroll-dialog-title"
         >
           <DialogTitle id="scroll-dialog-title">요청 장비 검색</DialogTitle>
+          <Divider />
           <DialogContent id="scrollDiv">
             <form className={classes.root}>
               <Grid
                 container
                 item
+                xs={12}
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
                 zeroMinWidth
               >
-                <TextField
-                  id="outlined-select-currency"
-                  select
-                  label="장비"
-                  className={classes.textField}
-                  SelectProps={{
-                    MenuProps: {
-                      className: classes.menu,
-                    },
-                  }}
-                  value=""
-                  margin="normal"
-                  variant="outlined"
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  sm={3}
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                  zeroMinWidth
                 >
-                  <MenuItem value="select">아이템</MenuItem>
-                </TextField>
-                <TextField
-                  id="outlined-name"
-                  label="Name"
-                  className={classes.textField}
-                  margin="normal"
-                  variant="outlined"
-                />
-                <Button
-                  variant="contained"
-                  className={classes.textField}
-                  size="large"
-                  color="primary"
+                  <TextField
+                    id="outlined-select-currency"
+                    select
+                    label="장비"
+                    className={classes.textField}
+                    SelectProps={{
+                      MenuProps: {
+                        className: classes.menu,
+                      },
+                    }}
+                    value=""
+                    margin="normal"
+                    variant="outlined"
+                  >
+                    <MenuItem value="select">아이템</MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  sm={6}
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                  zeroMinWidth
                 >
-                  검색
-                </Button>
+                  <TextField
+                    id="search"
+                    label="Search"
+                    className={classes.textField}
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  sm={3}
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                  zeroMinWidth
+                >
+                  <Button
+                    variant="contained"
+                    className={classes.searchBtn}
+                    size="large"
+                    color="primary"
+                  >
+                    검색
+                  </Button>
+                </Grid>
               </Grid>
             </form>
             <InfiniteComponent />

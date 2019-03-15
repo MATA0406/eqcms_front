@@ -1,14 +1,28 @@
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
 
-const style = {
-  height: 30,
-  border: '1px solid green',
-  margin: 6,
-  padding: 8,
-};
+import Grid from '@material-ui/core/Grid';
+
+import ListComponent from './ListComponent';
+
+const styles = () => ({
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    height: 100,
+  },
+  testIcon: {
+    fontSize: 60,
+  },
+  testText: {
+    fontSize: 18,
+  },
+});
 
 class InfiniteComponent extends React.Component {
   state = {
@@ -34,14 +48,14 @@ class InfiniteComponent extends React.Component {
         hasMore
         loader={<CircularProgress />}
       >
+        <Typography color="default">검색결과 (20)</Typography>
+        <Divider />
         {this.state.items.map((i, index) => (
-          <div style={style} key={index}>
-            div - #{index}
-          </div>
+          <ListComponent key={index} />
         ))}
       </InfiniteScroll>
     );
   }
 }
 
-export default InfiniteComponent;
+export default withStyles(styles)(InfiniteComponent);
