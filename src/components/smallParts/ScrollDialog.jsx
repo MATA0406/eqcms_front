@@ -1,4 +1,7 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import axios from 'axios';
 
 // Dialog
 import Button from '@material-ui/core/Button';
@@ -17,6 +20,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import Grid from '@material-ui/core/Grid';
 
+import { getEquipTpCdList } from 'store/modules/home';
 import InfiniteComponent from './InfiniteComponent';
 
 const styles = theme => ({
@@ -58,8 +62,68 @@ const styles = theme => ({
 });
 
 class ScrollDialog extends React.Component {
+  state = {
+    selectValue: '',
+  };
+
+  componentDidMount() {
+    this.getEquipTpCdList();
+  }
+
+  // 장비 구분 코드 목록 조회
+  getEquipTpCdList = async () => {
+    const params = {
+      access_token: localStorage.getItem('access_token'),
+    };
+
+    // 장비 구분 코드 목록 조회API
+    await axios
+      .get(
+        'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/common/code/api-101-0002',
+        {
+          params: {
+            params: JSON.stringify(params),
+          },
+          headers: {
+            'contents-type': 'application/json',
+          },
+        },
+      )
+      .then(json => {
+        this.props.getEquipTpCdList(json.data.data.equip_tp_cd_list);
+      })
+      .catch(err => {
+        console.log(err.response.data);
+
+        // Token error List
+        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+        if (errCodes.indexOf(err.response.data.code) !== -1) {
+          alert(err.response.data.message);
+          this.props.history.push('/login');
+        } else {
+          alert(err.response.data.message);
+        }
+      });
+  };
+
+  searchBtnClick = e => {
+    e.preventDefault();
+    console.log(e.target.equipTpCd.value);
+    const data = {
+      page: this.props.page,
+      rows: this.props.rows,
+      _search: this.props._search,
+    };
+  };
+
+  selectHandle = item => {
+    console.log('item :: ', item.target.value);
+    this.setState(() => ({ selectValue: item.target.value }));
+  };
+
   render() {
-    const { open, scroll, handleClose, classes } = this.props;
+    const { open, scroll, handleClose, classes, equip_tp_cd_list } = this.props;
 
     return (
       <div>
@@ -74,7 +138,7 @@ class ScrollDialog extends React.Component {
           <DialogTitle id="scroll-dialog-title">요청 장비 검색</DialogTitle>
           <Divider />
           <DialogContent id="scrollDiv">
-            <form className={classes.root}>
+            <form className={classes.root} onSubmit={this.searchBtnClick}>
               <Grid
                 container
                 item
@@ -95,20 +159,26 @@ class ScrollDialog extends React.Component {
                   zeroMinWidth
                 >
                   <TextField
-                    id="outlined-select-currency"
                     select
                     label="장비"
+                    id="equipTpCd"
+                    name="equipTpCd"
                     className={classes.textField}
+                    value={this.state.selectValue}
+                    onChange={this.selectHandle}
                     SelectProps={{
                       MenuProps: {
                         className: classes.menu,
                       },
                     }}
-                    value=""
                     margin="normal"
                     variant="outlined"
                   >
-                    <MenuItem value="select">아이템</MenuItem>
+                    {equip_tp_cd_list.map((item, index) => (
+                      <MenuItem value={item.equip_tp_cd} key={item.equip_tp_cd}>
+                        {item.equip_tp_nm}
+                      </MenuItem>
+                    ))}
                   </TextField>
                 </Grid>
                 <Grid
@@ -140,6 +210,7 @@ class ScrollDialog extends React.Component {
                   zeroMinWidth
                 >
                   <Button
+                    type="submit"
                     variant="contained"
                     className={classes.searchBtn}
                     size="large"
@@ -163,4 +234,27 @@ class ScrollDialog extends React.Component {
   }
 }
 
-export default withStyles(styles)(ScrollDialog);
+// store에 있는 값을 props로 내려받는다.
+const mapStateToProps = state => {
+  return {
+    equip_tp_cd_list: state.home.equip_tp_cd_list,
+    page: state.home.page,
+    rows: state.home.rows,
+    _search: state.home._search,
+  };
+};
+
+// action을 dispatch하는 펑션을 로컬에 있는 props로 매핑
+const mapActionToProps = dispatch => {
+  return {
+    getEquipTpCdList: equip_tp_cd_list =>
+      dispatch(getEquipTpCdList(equip_tp_cd_list)),
+  };
+};
+
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapActionToProps,
+  )(withRouter(ScrollDialog)),
+);

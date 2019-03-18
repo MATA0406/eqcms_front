@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 
 import ComputerIcon from '@material-ui/icons/Computer';
 
-const styles = theme => ({
+const styles = () => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -18,7 +18,7 @@ const styles = theme => ({
     fontSize: 60,
   },
   testText: {
-    fontSize: 18,
+    fontSize: 17,
   },
 });
 

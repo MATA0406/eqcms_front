@@ -6,23 +6,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 
-import Grid from '@material-ui/core/Grid';
-
 import ListComponent from './ListComponent';
 
-const styles = () => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    height: 100,
-  },
-  testIcon: {
-    fontSize: 60,
-  },
-  testText: {
-    fontSize: 18,
-  },
-});
+const styles = () => ({});
 
 class InfiniteComponent extends React.Component {
   state = {
