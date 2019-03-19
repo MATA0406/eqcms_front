@@ -20,7 +20,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import Grid from '@material-ui/core/Grid';
 
-import { getEquipTpCdList } from 'store/modules/home';
+import {
+  getEquipTpCdList,
+  getReqTargetEquipment,
+  addReqTargetEquipment,
+} from 'store/modules/home';
 import InfiniteComponent from './InfiniteComponent';
 
 const styles = theme => ({
@@ -61,9 +65,10 @@ const styles = theme => ({
   },
 });
 
-class ScrollDialog extends React.Component {
+class ReqEquipDialog extends React.Component {
   state = {
-    selectValue: '',
+    selectValue: 'all',
+    search_info: {},
   };
 
   componentDidMount() {
@@ -90,6 +95,7 @@ class ScrollDialog extends React.Component {
         },
       )
       .then(json => {
+        localStorage.setItem('access_token', json.data.data.access_token);
         this.props.getEquipTpCdList(json.data.data.equip_tp_cd_list);
       })
       .catch(err => {
@@ -100,30 +106,137 @@ class ScrollDialog extends React.Component {
 
         if (errCodes.indexOf(err.response.data.code) !== -1) {
           alert(err.response.data.message);
-          this.props.history.push('/login');
+          // this.props.history.push('/login');
+          window.location.href = '/login';
         } else {
           alert(err.response.data.message);
         }
       });
   };
 
-  searchBtnClick = e => {
+  // 요청 대상 장비 목록 조회(검색)
+  reqEquipSearch = async e => {
     e.preventDefault();
-    console.log(e.target.equipTpCd.value);
-    const data = {
+
+    if (e.target.equipTpCd.value === 'all') {
+      e.target.equipTpCd.value = '';
+    }
+
+    // 검색 정보
+    const search_info = {
+      equip_tp_cd: e.target.equipTpCd.value,
+      keyword: e.target.keyword.value,
+    };
+
+    const params = {
+      access_token: localStorage.getItem('access_token'),
       page: this.props.page,
       rows: this.props.rows,
       _search: this.props._search,
+      search_info,
     };
+    console.log('page :: ', params);
+
+    // 요청 대상 장비 목록 조회(검색)API
+    await axios
+      .get(
+        'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/dashboard/api-200-0002',
+        {
+          params: {
+            params: JSON.stringify(params),
+          },
+          headers: {
+            'contents-type': 'application/json',
+          },
+        },
+      )
+      .then(json => {
+        console.log(json);
+        localStorage.setItem('access_token', json.data.data.access_token);
+        this.props.getReqTargetEquipment(json.data.data);
+
+        // state에 search_info 저장
+        this.setState(() => ({
+          search_info,
+        }));
+      })
+      .catch(err => {
+        console.log(err.response.data);
+
+        // Token error List
+        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+        if (errCodes.indexOf(err.response.data.code) !== -1) {
+          alert(err.response.data.message);
+          // this.props.history.push('/login');
+          window.location.href = '/login';
+        } else {
+          alert(err.response.data.message);
+        }
+      });
   };
 
+  // 스크롤 List API 추가 호출
+  fetchMoreData = async () => {
+    const params = {
+      access_token: localStorage.getItem('access_token'),
+      page: this.props.page + 1,
+      rows: this.props.rows,
+      _search: this.props._search,
+      search_info: this.state.search_info,
+    };
+
+    // 요청 대상 장비 목록 조회(검색)API
+    await axios
+      .get(
+        'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/dashboard/api-200-0002',
+        {
+          params: {
+            params: JSON.stringify(params),
+          },
+          headers: {
+            'contents-type': 'application/json',
+          },
+        },
+      )
+      .then(json => {
+        console.log(json);
+        localStorage.setItem('access_token', json.data.data.access_token);
+        // this.props.addReqTargetEquipment(json.data.data);
+      })
+      .catch(err => {
+        console.log(err.response.data);
+
+        // Token error List
+        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+        if (errCodes.indexOf(err.response.data.code) !== -1) {
+          alert(err.response.data.message);
+          // this.props.history.push('/login');
+          window.location.href = '/login';
+        } else {
+          alert(err.response.data.message);
+        }
+      });
+  };
+
+  // 장비 Select box 컨트롤
   selectHandle = item => {
-    console.log('item :: ', item.target.value);
     this.setState(() => ({ selectValue: item.target.value }));
   };
 
   render() {
-    const { open, scroll, handleClose, classes, equip_tp_cd_list } = this.props;
+    const {
+      open,
+      scroll,
+      handleClose,
+      classes,
+      equip_tp_cd_list,
+      equip_list,
+      page_info,
+      page,
+      rows,
+    } = this.props;
 
     return (
       <div>
@@ -138,7 +251,7 @@ class ScrollDialog extends React.Component {
           <DialogTitle id="scroll-dialog-title">요청 장비 검색</DialogTitle>
           <Divider />
           <DialogContent id="scrollDiv">
-            <form className={classes.root} onSubmit={this.searchBtnClick}>
+            <form className={classes.root} onSubmit={this.reqEquipSearch}>
               <Grid
                 container
                 item
@@ -174,6 +287,7 @@ class ScrollDialog extends React.Component {
                     margin="normal"
                     variant="outlined"
                   >
+                    <MenuItem value="all">전체</MenuItem>
                     {equip_tp_cd_list.map((item, index) => (
                       <MenuItem value={item.equip_tp_cd} key={item.equip_tp_cd}>
                         {item.equip_tp_nm}
@@ -192,7 +306,8 @@ class ScrollDialog extends React.Component {
                   zeroMinWidth
                 >
                   <TextField
-                    id="search"
+                    id="keyword"
+                    name="keyword"
                     label="Search"
                     className={classes.textField}
                     margin="normal"
@@ -221,7 +336,13 @@ class ScrollDialog extends React.Component {
                 </Grid>
               </Grid>
             </form>
-            <InfiniteComponent />
+            <InfiniteComponent
+              equip_list={equip_list}
+              page_info={page_info}
+              page={page}
+              rows={rows}
+              fetchMoreData={this.fetchMoreData}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
@@ -238,6 +359,8 @@ class ScrollDialog extends React.Component {
 const mapStateToProps = state => {
   return {
     equip_tp_cd_list: state.home.equip_tp_cd_list,
+    equip_list: state.home.equip_list,
+    page_info: state.home.page_info,
     page: state.home.page,
     rows: state.home.rows,
     _search: state.home._search,
@@ -249,6 +372,10 @@ const mapActionToProps = dispatch => {
   return {
     getEquipTpCdList: equip_tp_cd_list =>
       dispatch(getEquipTpCdList(equip_tp_cd_list)),
+    getReqTargetEquipment: response =>
+      dispatch(getReqTargetEquipment(response)),
+    addReqTargetEquipment: response =>
+      dispatch(addReqTargetEquipment(response)),
   };
 };
 
@@ -256,5 +383,5 @@ export default withStyles(styles)(
   connect(
     mapStateToProps,
     mapActionToProps,
-  )(withRouter(ScrollDialog)),
+  )(withRouter(ReqEquipDialog)),
 );

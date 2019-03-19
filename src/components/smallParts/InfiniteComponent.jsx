@@ -15,29 +15,27 @@ class InfiniteComponent extends React.Component {
     items: Array.from({ length: 20 }),
   };
 
-  fetchMoreData = () => {
-    // a fake async api call like which sends
-    // 20 more records in 1.5 secs
-    setTimeout(() => {
-      this.setState(state => ({
-        items: state.items.concat(Array.from({ length: 20 })),
-      }));
-    }, 1500);
-  };
-
   render() {
+    const { equip_list, page_info, fetchMoreData, page, rows } = this.props;
+
     return (
       <InfiniteScroll
         scrollableTarget="scrollDiv"
         dataLength={this.state.items.length}
-        next={this.fetchMoreData}
+        next={fetchMoreData}
         hasMore
         loader={<CircularProgress />}
       >
-        <Typography color="default">검색결과 (20)</Typography>
+        <Typography color="default">
+          검색결과 ({page_info.rows ? page_info.rows : 0})
+        </Typography>
         <Divider />
-        {this.state.items.map((i, index) => (
-          <ListComponent key={index} />
+        {equip_list.map(equip_info => (
+          <ListComponent
+            equip_info={equip_info}
+            page_info={page_info}
+            key={equip_info.equip_no}
+          />
         ))}
       </InfiniteScroll>
     );

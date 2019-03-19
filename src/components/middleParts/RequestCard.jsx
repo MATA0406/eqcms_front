@@ -6,7 +6,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import orange from '@material-ui/core/colors/orange';
-import ScrollDialog from 'components/smallParts/ScrollDialog';
+import ReqEquipDialog from 'components/smallParts/ReqEquipDialog';
 
 const styles = {
   root: {
@@ -70,7 +70,7 @@ class RequestCard extends React.Component {
           </Card>
         </Grid>
 
-        <ScrollDialog
+        <ReqEquipDialog
           open={this.state.open}
           scroll={this.state.scroll}
           handleClose={this.handleClose}

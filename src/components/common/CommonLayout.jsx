@@ -48,14 +48,16 @@ class CommonLayout extends React.Component {
   // render로 컴포넌트를 DOM에 부착한 후 Mount가 완료된 후
   componentDidMount() {
     if (!localStorage.getItem('access_token')) {
-      this.props.history.push('/login');
+      // this.props.history.push('/login');
+      window.location.href = '/login';
     }
   }
 
   // 업데이트가 일어난 후 render하기 전
   componentWillUpdate() {
     if (!localStorage.getItem('access_token')) {
-      this.props.history.push('/login');
+      // this.props.history.push('/login');
+      window.location.href = '/login';
     }
   }
 

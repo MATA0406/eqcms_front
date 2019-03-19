@@ -60,7 +60,7 @@ class HomePage extends React.Component {
 
         if (errCodes.indexOf(err.response.data.code) !== -1) {
           alert(err.response.data.message);
-          this.props.history.push('/login');
+          window.location.href = '/login';
         } else {
           alert(err.response.data.message);
         }
@@ -99,7 +99,8 @@ class HomePage extends React.Component {
 
         if (errCodes.indexOf(err.response.data.code) !== -1) {
           alert(err.response.data.message);
-          this.props.history.push('/login');
+          // this.props.history.push('/login');
+          window.location.href = '/login';
         } else {
           alert(err.response.data.message);
         }

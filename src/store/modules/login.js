@@ -37,10 +37,8 @@ export default function loginReducer(state = initialState, action) {
       };
     case GO_LOGOUT:
       localStorage.clear();
-      return {
-        ...state,
-        login_info: {},
-      };
+      window.location.href = '/login';
+      break;
     default:
       return state;
   }
