@@ -135,7 +135,6 @@ class ReqEquipDialog extends React.Component {
       _search: this.props._search,
       search_info,
     };
-    console.log('page :: ', params);
 
     // 요청 대상 장비 목록 조회(검색)API
     await axios
@@ -151,7 +150,6 @@ class ReqEquipDialog extends React.Component {
         },
       )
       .then(json => {
-        console.log(json);
         localStorage.setItem('access_token', json.data.data.access_token);
         this.props.getReqTargetEquipment(json.data.data);
 
@@ -168,7 +166,6 @@ class ReqEquipDialog extends React.Component {
 
         if (errCodes.indexOf(err.response.data.code) !== -1) {
           alert(err.response.data.message);
-          // this.props.history.push('/login');
           window.location.href = '/login';
         } else {
           alert(err.response.data.message);
@@ -178,9 +175,13 @@ class ReqEquipDialog extends React.Component {
 
   // 스크롤 List API 추가 호출
   fetchMoreData = async () => {
+    if (this.props.rest_records < 1) {
+      return false;
+    }
+
     const params = {
       access_token: localStorage.getItem('access_token'),
-      page: this.props.page + 1,
+      page: this.props.page,
       rows: this.props.rows,
       _search: this.props._search,
       search_info: this.state.search_info,
@@ -200,9 +201,8 @@ class ReqEquipDialog extends React.Component {
         },
       )
       .then(json => {
-        console.log(json);
         localStorage.setItem('access_token', json.data.data.access_token);
-        // this.props.addReqTargetEquipment(json.data.data);
+        this.props.addReqTargetEquipment(json.data.data);
       })
       .catch(err => {
         console.log(err.response.data);
@@ -212,7 +212,6 @@ class ReqEquipDialog extends React.Component {
 
         if (errCodes.indexOf(err.response.data.code) !== -1) {
           alert(err.response.data.message);
-          // this.props.history.push('/login');
           window.location.href = '/login';
         } else {
           alert(err.response.data.message);
@@ -234,8 +233,7 @@ class ReqEquipDialog extends React.Component {
       equip_tp_cd_list,
       equip_list,
       page_info,
-      page,
-      rows,
+      list_load_status,
     } = this.props;
 
     return (
@@ -288,7 +286,7 @@ class ReqEquipDialog extends React.Component {
                     variant="outlined"
                   >
                     <MenuItem value="all">전체</MenuItem>
-                    {equip_tp_cd_list.map((item, index) => (
+                    {equip_tp_cd_list.map(item => (
                       <MenuItem value={item.equip_tp_cd} key={item.equip_tp_cd}>
                         {item.equip_tp_nm}
                       </MenuItem>
@@ -339,8 +337,7 @@ class ReqEquipDialog extends React.Component {
             <InfiniteComponent
               equip_list={equip_list}
               page_info={page_info}
-              page={page}
-              rows={rows}
+              list_load_status={list_load_status}
               fetchMoreData={this.fetchMoreData}
             />
           </DialogContent>
@@ -363,6 +360,8 @@ const mapStateToProps = state => {
     page_info: state.home.page_info,
     page: state.home.page,
     rows: state.home.rows,
+    rest_records: state.home.rest_records,
+    list_load_status: state.home.list_load_status,
     _search: state.home._search,
   };
 };

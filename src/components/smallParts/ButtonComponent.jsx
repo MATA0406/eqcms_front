@@ -103,7 +103,6 @@ function ButtonComponent(props) {
         },
       )
       .then(item => {
-        console.log('Button API :: ', item);
         localStorage.setItem('access_token', item.data.data.access_token);
         window.location.reload();
       })

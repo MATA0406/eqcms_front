@@ -17,7 +17,7 @@ const styles = () => ({
     fontSize: 60,
   },
   testText: {
-    fontSize: 17,
+    fontSize: 16,
   },
   cardImg: {
     width: 50,
@@ -26,8 +26,7 @@ const styles = () => ({
 
 class ListComponent extends React.Component {
   render() {
-    const { classes, equip_info, page_info } = this.props;
-    console.log(equip_info);
+    const { classes, equip_info } = this.props;
     return (
       <Fragment>
         <Grid container item alignItems="center" xs={12}>
@@ -121,7 +120,7 @@ class ListComponent extends React.Component {
             ) : (
               <Button
                 variant="contained"
-                disabled={equip_info.req_cd !== '201001'}
+                disabled
                 style={{
                   backgroundColor: red[500],
                   color: '#ffffff',

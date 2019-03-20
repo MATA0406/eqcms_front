@@ -47,6 +47,8 @@ const initialState = {
   page_info: {},
   page: 1,
   rows: 20,
+  rest_records: 0,
+  list_load_status: true,
   _search: true,
 };
 
@@ -68,6 +70,12 @@ export default function home(state = initialState, action) {
         ...state,
         page_info: action.page_info,
         equip_list: action.equip_list,
+        page: state.page + 1,
+        rest_records: action.page_info.records - action.equip_list.length,
+        list_load_status: !(
+          action.page_info.records - action.equip_list.length <
+          1
+        ),
       };
     case GET_EQUIP_TP_CD_LIST:
       return {
@@ -78,7 +86,10 @@ export default function home(state = initialState, action) {
       return {
         ...state,
         page_info: action.page_info,
-        equip_list: action.equipList,
+        equip_list: state.equip_list.concat(action.equip_list),
+        rest_records: state.rest_records - action.equip_list.length,
+        list_load_status: !(state.rest_records - action.equip_list.length < 1),
+        page: state.page + 1,
       };
     default:
       return state;

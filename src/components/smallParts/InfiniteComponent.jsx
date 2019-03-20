@@ -2,7 +2,8 @@ import React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 
@@ -11,24 +12,23 @@ import ListComponent from './ListComponent';
 const styles = () => ({});
 
 class InfiniteComponent extends React.Component {
-  state = {
-    items: Array.from({ length: 20 }),
-  };
-
   render() {
-    const { equip_list, page_info, fetchMoreData, page, rows } = this.props;
+    const {
+      equip_list,
+      page_info,
+      fetchMoreData,
+      list_load_status,
+    } = this.props;
 
     return (
       <InfiniteScroll
         scrollableTarget="scrollDiv"
-        dataLength={this.state.items.length}
+        dataLength={equip_list.length}
         next={fetchMoreData}
-        hasMore
-        loader={<CircularProgress />}
+        hasMore={list_load_status}
+        loader={<LinearProgress />}
       >
-        <Typography color="default">
-          검색결과 ({page_info.rows ? page_info.rows : 0})
-        </Typography>
+        <Typography color="default">검색결과 ({equip_list.length})</Typography>
         <Divider />
         {equip_list.map(equip_info => (
           <ListComponent
