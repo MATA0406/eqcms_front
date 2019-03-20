@@ -19,6 +19,7 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import Grid from '@material-ui/core/Grid';
+import blue from '@material-ui/core/colors/blue';
 
 import {
   getEquipTpCdList,
@@ -59,6 +60,11 @@ const styles = theme => ({
     width: '100%',
     height: '55px',
     marginTop: '7px',
+    color: '#ffffff',
+    backgroundColor: blue.A400,
+    '&:hover': {
+      backgroundColor: blue[500],
+    },
   },
   dialogAttr: {
     width: 700,
@@ -130,7 +136,7 @@ class ReqEquipDialog extends React.Component {
 
     const params = {
       access_token: localStorage.getItem('access_token'),
-      page: this.props.page,
+      page: 1,
       rows: this.props.rows,
       _search: this.props._search,
       search_info,
@@ -181,7 +187,7 @@ class ReqEquipDialog extends React.Component {
 
     const params = {
       access_token: localStorage.getItem('access_token'),
-      page: this.props.page,
+      page: this.props.page + 1,
       rows: this.props.rows,
       _search: this.props._search,
       search_info: this.state.search_info,
@@ -244,6 +250,7 @@ class ReqEquipDialog extends React.Component {
           open={open}
           onClose={handleClose}
           scroll={scroll}
+          disableBackdropClick
           aria-labelledby="scroll-dialog-title"
         >
           <DialogTitle id="scroll-dialog-title">요청 장비 검색</DialogTitle>

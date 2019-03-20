@@ -70,7 +70,7 @@ export default function home(state = initialState, action) {
         ...state,
         page_info: action.page_info,
         equip_list: action.equip_list,
-        page: state.page + 1,
+        page: 1,
         rest_records: action.page_info.records - action.equip_list.length,
         list_load_status: !(
           action.page_info.records - action.equip_list.length <
@@ -89,7 +89,7 @@ export default function home(state = initialState, action) {
         equip_list: state.equip_list.concat(action.equip_list),
         rest_records: state.rest_records - action.equip_list.length,
         list_load_status: !(state.rest_records - action.equip_list.length < 1),
-        page: state.page + 1,
+        page: parseInt(action.page_info.page),
       };
     default:
       return state;

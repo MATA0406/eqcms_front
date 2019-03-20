@@ -28,7 +28,7 @@ class InfiniteComponent extends React.Component {
         hasMore={list_load_status}
         loader={<LinearProgress />}
       >
-        <Typography color="default">검색결과 ({equip_list.length})</Typography>
+        <Typography color="default">검색결과 ({page_info.records})</Typography>
         <Divider />
         {equip_list.map(equip_info => (
           <ListComponent

@@ -65,11 +65,11 @@ function ButtonComponent(props) {
 
   // 요청 상태 코드에 따라 버튼 CSS 처리
   if (cardType === 'req_card' && equip_info.req_cd === '201002') {
-    req_type = classes.reqBtn2;
+    req_type = classes.reqBtn4;
   } else if (cardType === 'req_card' && equip_info.req_cd === '201003') {
     req_type = classes.reqBtn3;
   } else if (cardType === 'req_card' && equip_info.req_cd === '201004') {
-    req_type = classes.reqBtn4;
+    req_type = classes.reqBtn2;
   }
 
   // 요청 상태 코드에 따라 btn_type 처리
@@ -114,7 +114,7 @@ function ButtonComponent(props) {
 
         if (errCodes.indexOf(err.response.data.code) !== -1) {
           alert(err.response.data.message);
-          history.push('/login');
+          window.location.href = '/login';
         } else {
           alert(err.response.data.message);
         }
