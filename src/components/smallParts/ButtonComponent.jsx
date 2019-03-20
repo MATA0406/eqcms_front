@@ -29,36 +29,36 @@ const styles = {
   },
   reqBtn3: {
     color: '#ffffff',
-    backgroundColor: green[500],
+    backgroundColor: green.A700,
     '&:hover': {
-      backgroundColor: green.A700,
+      backgroundColor: green.A400,
     },
   },
   reqBtn4: {
     color: '#ffffff',
-    backgroundColor: red[500],
+    backgroundColor: red.A400,
     '&:hover': {
-      backgroundColor: red.A400,
+      backgroundColor: red.A200,
     },
   },
   myBtn1: {
     color: '#ffffff',
-    backgroundColor: lightGreen[500],
+    backgroundColor: lightGreen.A400,
     '&:hover': {
-      backgroundColor: lightGreen.A400,
+      backgroundColor: lightGreen.A200,
     },
   },
   myBtn2: {
     color: '#ffffff',
-    backgroundColor: purple[500],
+    backgroundColor: purple.A400,
     '&:hover': {
-      backgroundColor: purple.A400,
+      backgroundColor: purple.A200,
     },
   },
 };
 
 function ButtonComponent(props) {
-  const { classes, equip_info, cardType, history } = props;
+  const { classes, equip_info, cardType } = props;
 
   let req_type;
   let btn_type;

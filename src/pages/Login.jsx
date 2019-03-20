@@ -56,7 +56,7 @@ class Login extends React.Component {
     localStorage.clear();
   }
 
-  // 로그인 버튼 클릭
+  // 로그인
   submit = event => {
     event.preventDefault();
 
@@ -65,11 +65,7 @@ class Login extends React.Component {
       login_pw: event.target.login_pw.value,
     };
 
-    // ------------------------------------------------------------------------------
-
-    // 중복 로그인 체크
-
-    // 로그인
+    // 로그인 API
     axios
       .post(
         'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
@@ -82,6 +78,7 @@ class Login extends React.Component {
           item.data.data.login_info.access_token,
         );
         localStorage.setItem('login_nm', item.data.data.login_info.login_nm);
+        localStorage.setItem('login_id', item.data.data.login_info.login_id);
         this.props.goLogin(item.data.data.login_info);
         this.props.history.push('/');
       })

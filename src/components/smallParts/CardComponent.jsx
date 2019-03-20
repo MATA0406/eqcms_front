@@ -22,6 +22,7 @@ const styles = {
   cardImg: {
     width: 70,
   },
+  cardBack: {},
 };
 
 function CardComponent(props) {

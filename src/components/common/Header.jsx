@@ -12,6 +12,14 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+
 import { goLogout } from 'store/modules/login';
 
 const drawerWidth = 240;
@@ -41,12 +49,33 @@ const styles = theme => ({
   grow: {
     flexGrow: 1,
   },
+  text: {
+    fontSize: 19,
+  },
+  inputText: {
+    width: '100%',
+  },
 });
 
 class Header extends React.Component {
+  state = {
+    dialogOpen: false,
+  };
+
+  // 비밀번호 수정 창 열기
+  handleClickOpen = () => {
+    this.setState({ dialogOpen: true });
+  };
+
+  // 비밀번호 수정 창 닫기
+  handleClose = () => {
+    this.setState({ dialogOpen: false });
+  };
+
+  // 로그아웃
   logout = () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
-      // 로그인
+      // 로그아웃 API
       axios
         .post(
           'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0003',
@@ -58,7 +87,6 @@ class Header extends React.Component {
           },
         )
         .then(item => {
-          console.log('Logout :: ', item);
           this.props.goLogout();
         })
         .catch(function(err) {
@@ -92,12 +120,67 @@ class Header extends React.Component {
           >
             EQCMS
           </Typography>
-          <Typography variant="h6" color="inherit" noWrap>
+
+          <Button
+            className={classes.text}
+            color="inherit"
+            size="large"
+            onClick={this.handleClickOpen}
+          >
             {localStorage.getItem('login_nm')}
-          </Typography>
-          <Button color="inherit" onClick={this.logout}>
+          </Button>
+          <Button color="inherit" size="large" onClick={this.logout}>
             LogOut
           </Button>
+          <Dialog
+            open={this.state.dialogOpen}
+            onClose={this.handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">비밀번호 수정</DialogTitle>
+            <DialogContent>
+              <Grid
+                container
+                item
+                xs={12}
+                direction="column"
+                justify="center"
+                alignItems="center"
+                zeroMinWidth
+              >
+                <Typography className={classes.text} color="default">
+                  이메일: {localStorage.getItem('login_id')}
+                </Typography>
+                <TextField
+                  className={classes.inputText}
+                  id="keyword"
+                  name="keyword"
+                  type="password"
+                  autoComplete="current-password"
+                  label="변경할 비밀번호"
+                  margin="normal"
+                />
+                <TextField
+                  className={classes.inputText}
+                  id="keyword"
+                  name="keyword"
+                  type="password"
+                  autoComplete="current-password"
+                  label="비밀번호 확인"
+                  margin="normal"
+                />
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose} color="primary">
+                취소
+              </Button>
+              <Button onClick={this.handleClose} color="primary" autoFocus>
+                수정
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Toolbar>
       </AppBar>
     );
