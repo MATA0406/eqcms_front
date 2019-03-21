@@ -58,31 +58,33 @@ const styles = {
 };
 
 function ButtonComponent(props) {
-  const { classes, equip_info, cardType } = props;
+  const { classes, equip_info, req_grp } = props;
 
   let req_type;
   let btn_type;
-
-  // 요청 상태 코드에 따라 버튼 CSS 처리
-  if (cardType === 'req_card' && equip_info.req_cd === '201002') {
-    req_type = classes.reqBtn4;
-  } else if (cardType === 'req_card' && equip_info.req_cd === '201003') {
-    req_type = classes.reqBtn3;
-  } else if (cardType === 'req_card' && equip_info.req_cd === '201004') {
-    req_type = classes.reqBtn2;
-  }
+  let btn_name;
+  let btnDisabled = false;
 
   // 요청 상태 코드에 따라 btn_type 처리
-  if (cardType === 'req_card' && equip_info.req_cd === '201002') {
+  if (req_grp === 'R' && equip_info.req_cd === '201002') {
     btn_type = 'req_cancel';
-  } else if (cardType === 'req_card' && equip_info.req_cd === '201003') {
+    req_type = classes.reqBtn4;
+    btn_name = '요청취소';
+  } else if (req_grp === 'R' && equip_info.req_cd === '201003') {
     btn_type = 'receive';
-  } else if (cardType === 'req_card' && equip_info.req_cd === '201004') {
+    req_type = classes.reqBtn3;
+    btn_name = '수령';
+  } else if (req_grp === 'R' && equip_info.req_cd === '201004') {
     btn_type = 'reject_confirm';
-  } else if (cardType === 'my_card' && equip_info.req_cd === '201004') {
+    req_type = classes.reqBtn2;
+    btn_name = '확인';
+  } else if (req_grp === 'M' && equip_info.req_cd === '201004') {
     btn_type = 'reject_confirm';
-  } else if (cardType === 'my_card' && equip_info.req_cd === '201004') {
-    btn_type = 'reject_confirm';
+  } else if (req_grp === 'E' && equip_info.req_cd === '201001') {
+    btn_name = '요청';
+  } else if (req_grp === 'E' && equip_info.req_cd !== '201001') {
+    btn_name = '요청불가';
+    btnDisabled = true;
   }
 
   const btnClick = async e => {
@@ -123,7 +125,7 @@ function ButtonComponent(props) {
 
   return (
     <Fragment>
-      {cardType === 'req_card' ? (
+      {req_grp === 'R' ? (
         <CardActions>
           <Button
             className={req_type}
@@ -134,14 +136,14 @@ function ButtonComponent(props) {
             data-btn_type={btn_type}
             onClick={btnClick}
           >
-            {equip_info.btn_nm}
+            {btn_name}
           </Button>
         </CardActions>
       ) : (
         ''
       )}
 
-      {cardType === 'my_card' && equip_info.req_cd === '201002' ? (
+      {req_grp === 'M' && equip_info.req_cd === '201002' ? (
         <Fragment>
           <CardActions>
             <Button
@@ -171,6 +173,23 @@ function ButtonComponent(props) {
             </Button>
           </CardActions>
         </Fragment>
+      ) : (
+        ''
+      )}
+
+      {req_grp === 'E' ? (
+        <CardActions>
+          <Button
+            className={req_type}
+            variant="contained"
+            color="primary"
+            size="large"
+            disabled={btnDisabled}
+            data-equip_no={equip_info.equip_no}
+          >
+            {btn_name}
+          </Button>
+        </CardActions>
       ) : (
         ''
       )}

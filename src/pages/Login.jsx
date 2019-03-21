@@ -15,6 +15,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import { goLogin } from 'store/modules/login';
 
@@ -51,14 +53,39 @@ const styles = theme => ({
   },
 });
 
+const getCookie = function(name) {
+  var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return value ? value[2] : null;
+};
+
 class Login extends React.Component {
+  state = {
+    checkStatus: false,
+    login_id: '',
+  };
+
   componentDidMount() {
     localStorage.clear();
+    getCookie('login_id');
+    if (getCookie('login_id') !== null && getCookie('login_id') !== '') {
+      this.setState({
+        checkStatus: true,
+        login_id: getCookie('login_id'),
+      });
+    }
   }
+
+  setCookie = (name, value, exp) => {
+    const date = new Date();
+    date.setTime(date.getTime() + exp * 24 * 60 * 60 * 1000);
+    document.cookie = name + '=' + value + ';expires=' + date.toUTCString();
+  };
 
   // 로그인
   submit = event => {
     event.preventDefault();
+    console.log('event.target.check :: ', event.target.check);
+    const check = event.target.check;
 
     const userInfo = {
       login_id: event.target.login_id.value,
@@ -79,12 +106,30 @@ class Login extends React.Component {
         );
         localStorage.setItem('login_nm', item.data.data.login_info.login_nm);
         localStorage.setItem('login_id', item.data.data.login_info.login_id);
+        console.log('event.target.check :: ', check);
+        if (check.checked) {
+          // name=Ethan, 7일 뒤 만료됨
+          this.setCookie('login_id', item.data.data.login_info.login_id, 7);
+        } else {
+          document.cookie = 'login_id=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        }
+
         this.props.goLogin(item.data.data.login_info);
         this.props.history.push('/');
       })
-      .catch(function(err) {
-        alert(err.response.data.message);
+      .catch(err => {
+        alert(err);
       });
+  };
+
+  checkboxHandle = e => {
+    this.setState({
+      checkStatus: e.target.checked,
+    });
+  };
+
+  handleChange = event => {
+    this.setState({ login_id: event.target.value });
   };
 
   render() {
@@ -106,6 +151,8 @@ class Login extends React.Component {
               <Input
                 id="login_id"
                 name="login_id"
+                value={this.state.login_id}
+                onChange={this.handleChange}
                 autoComplete="email"
                 autoFocus
               />
@@ -119,6 +166,18 @@ class Login extends React.Component {
                 autoComplete="current-password"
               />
             </FormControl>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="check"
+                  id="check"
+                  checked={this.state.checkStatus}
+                  onChange={this.checkboxHandle}
+                  color="primary"
+                />
+              }
+              label="Remember me"
+            />
             <Button
               type="submit"
               fullWidth

@@ -11,14 +11,9 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import Link from '@material-ui/core/Link';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
+import PwModifyDialog from 'components/smallParts/PwModifyDialog';
 
 import { goLogout } from 'store/modules/login';
 
@@ -52,9 +47,6 @@ const styles = theme => ({
   text: {
     fontSize: 19,
   },
-  inputText: {
-    width: '100%',
-  },
 });
 
 class Header extends React.Component {
@@ -86,11 +78,19 @@ class Header extends React.Component {
             },
           },
         )
-        .then(item => {
+        .then(() => {
           this.props.goLogout();
         })
-        .catch(function(err) {
-          alert(err.response.data.message);
+        .catch(err => {
+          // Token error List
+          const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+          if (errCodes.indexOf(err.response.data.code) !== -1) {
+            alert(err.response.data.message);
+            window.location.href = '/login';
+          } else {
+            alert(err.response.data.message);
+          }
         });
     }
   };
@@ -118,7 +118,9 @@ class Header extends React.Component {
             color="inherit"
             noWrap
           >
-            EQCMS
+            <Link href="/" color="inherit">
+              EQCMS
+            </Link>
           </Typography>
 
           <Button
@@ -132,55 +134,11 @@ class Header extends React.Component {
           <Button color="inherit" size="large" onClick={this.logout}>
             LogOut
           </Button>
-          <Dialog
-            open={this.state.dialogOpen}
-            onClose={this.handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">비밀번호 수정</DialogTitle>
-            <DialogContent>
-              <Grid
-                container
-                item
-                xs={12}
-                direction="column"
-                justify="center"
-                alignItems="center"
-                zeroMinWidth
-              >
-                <Typography className={classes.text} color="default">
-                  이메일: {localStorage.getItem('login_id')}
-                </Typography>
-                <TextField
-                  className={classes.inputText}
-                  id="keyword"
-                  name="keyword"
-                  type="password"
-                  autoComplete="current-password"
-                  label="변경할 비밀번호"
-                  margin="normal"
-                />
-                <TextField
-                  className={classes.inputText}
-                  id="keyword"
-                  name="keyword"
-                  type="password"
-                  autoComplete="current-password"
-                  label="비밀번호 확인"
-                  margin="normal"
-                />
-              </Grid>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleClose} color="primary">
-                취소
-              </Button>
-              <Button onClick={this.handleClose} color="primary" autoFocus>
-                수정
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <PwModifyDialog
+            handleClickOpen={this.handleClickOpen}
+            handleClose={this.handleClose}
+            dialogOpen={this.state.dialogOpen}
+          />
         </Toolbar>
       </AppBar>
     );

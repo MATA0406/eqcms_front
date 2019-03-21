@@ -89,7 +89,6 @@ class HomePage extends React.Component {
       .then(json => {
         localStorage.setItem('access_token', json.data.data.access_token);
         this.props.getMyEquipment(json.data.data.my_equip_list);
-        console.log('api-200-0003 :: ', json);
       })
       .catch(err => {
         console.log(err.response.data);
@@ -118,19 +117,20 @@ class HomePage extends React.Component {
         {req_equip_list.length ? (
           <EquipmentCard
             history={this.props.history}
-            cardType="req_card"
+            req_grp="R"
             equip_list={req_equip_list}
           />
         ) : (
-          <EquipmentCard cardType="req_card" />
+          <EquipmentCard req_grp="R" />
         )}
+        
         <Typography className={classes.myEquipmentList}>
           나의 장비 목록
         </Typography>
         {my_equip_list.length ? (
           <EquipmentCard
             history={this.props.history}
-            cardType="my_card"
+            req_grp="M"
             equip_list={my_equip_list}
           />
         ) : (

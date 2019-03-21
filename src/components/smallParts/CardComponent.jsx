@@ -26,7 +26,7 @@ const styles = {
 };
 
 function CardComponent(props) {
-  const { classes, cardType, equip_info, history } = props;
+  const { classes, req_grp, equip_info, history } = props;
 
   return (
     <Grid container item xs={12} sm={6} md={4} lg={3} xl={2}>
@@ -44,7 +44,9 @@ function CardComponent(props) {
                 color="textSecondary"
                 gutterBottom
               >
-                {cardType === 'my_card' ? '내장비' : equip_info.req_cd_nm}
+                {equip_info.user_id === localStorage.getItem('login_id')
+                  ? '내장비'
+                  : equip_info.req_cd_nm}
               </Typography>
               <Typography
                 className={classes.title}
@@ -110,7 +112,7 @@ function CardComponent(props) {
             alignItems="flex-end"
           >
             <ButtonComponent
-              cardType={cardType}
+              req_grp={req_grp}
               equip_info={equip_info}
               history={history}
             />

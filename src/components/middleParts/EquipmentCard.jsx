@@ -23,23 +23,34 @@ const styles = {
 };
 
 function EquipmentCard(props) {
-  const { classes, cardType, equip_list, history } = props;
+  const { classes, req_grp, equip_list, history, cardType } = props;
 
   return (
     <div className={classes.root}>
       <Grid container spacing={24}>
-        {equip_list
-          ? equip_list.map((item, index) => (
+        {equip_list && cardType !== 'equip'
+          ? equip_list.map((equip_info, index) => (
               <CardComponent
                 history={history}
-                cardType={cardType}
-                equip_info={item}
+                req_grp={req_grp}
+                equip_info={equip_info}
                 key={index}
               />
             ))
           : ''}
 
-        {cardType === 'req_card' ? <RequestCard /> : ''}
+        {equip_list && cardType === 'equip'
+          ? equip_list.map((equip_info, index) => (
+              <CardComponent
+                history={history}
+                req_grp={equip_info.req_grp}
+                equip_info={equip_info}
+                key={index}
+              />
+            ))
+          : ''}
+
+        {req_grp === 'R' ? <RequestCard /> : ''}
       </Grid>
     </div>
   );
