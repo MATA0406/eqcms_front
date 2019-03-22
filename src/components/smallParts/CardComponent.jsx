@@ -26,7 +26,7 @@ const styles = {
 };
 
 function CardComponent(props) {
-  const { classes, req_grp, equip_info, history } = props;
+  const { classes, req_grp, equip_info } = props;
 
   return (
     <Grid container item xs={12} sm={6} md={4} lg={3} xl={2}>
@@ -111,11 +111,7 @@ function CardComponent(props) {
             justify="center"
             alignItems="flex-end"
           >
-            <ButtonComponent
-              req_grp={req_grp}
-              equip_info={equip_info}
-              history={history}
-            />
+            <ButtonComponent req_grp={req_grp} equip_info={equip_info} />
           </Grid>
         </Card>
       ) : (

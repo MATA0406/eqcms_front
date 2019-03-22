@@ -14,34 +14,53 @@ const styles = {
   root: {
     flexGrow: 1,
   },
+  card: {
+    minWidth: 275,
+  },
+  title: {
+    fontSize: 16,
+  },
+  iconSize: {
+    fontSize: 100,
+  },
 };
 
-class EquipmentCard extends React.Component {
+class EquipmentInfinite extends React.Component {
   render() {
-    const { classes, req_grp, equip_list } = this.props;
+    const {
+      classes,
+      req_grp,
+      equip_list,
+      fetchMoreData,
+      list_load_status,
+    } = this.props;
 
     return (
-      <div className={classes.root}>
+      <InfiniteScroll
+        dataLength={equip_list.length}
+        next={fetchMoreData}
+        hasMore={list_load_status}
+        scrollThreshold="99%"
+        style={{ overflow: 'inherit' }}
+      >
         <Grid container spacing={24}>
           {equip_list
             ? equip_list.map((equip_info, index) => (
                 <CardComponent
-                  req_grp={req_grp}
+                  req_grp={equip_info.req_grp}
                   equip_info={equip_info}
                   key={index}
                 />
               ))
             : ''}
-
-          {req_grp === 'R' ? <RequestCard /> : ''}
         </Grid>
-      </div>
+      </InfiniteScroll>
     );
   }
 }
 
-EquipmentCard.propTypes = {
+EquipmentInfinite.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(EquipmentCard);
+export default withStyles(styles)(EquipmentInfinite);

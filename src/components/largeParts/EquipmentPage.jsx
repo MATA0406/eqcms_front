@@ -6,10 +6,10 @@ import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import EquipmentCard from 'components/middleParts/EquipmentCard';
-import SelectController from 'components/middleParts/SelectController';
+import EquipmentInfinite from 'components/middleParts/EquipmentInfinite';
+import EquipmentForm from 'components/middleParts/EquipmentForm';
 
-import { setEquipmentList } from 'store/modules/equipment';
+import { setEquipmentList, addEquipmentList } from 'store/modules/equipment';
 
 const styles = {
   title: {
@@ -18,12 +18,16 @@ const styles = {
 };
 
 class EquipmentPage extends React.Component {
+  state = {
+    search_info: {},
+  };
+
   componentDidMount() {
-    this.f_getEquipmentList();
+    this.getEquipmentList();
   }
 
-  // 나의 장비 목록 조회
-  f_getEquipmentList = async () => {
+  // 장비 목록 조회(최초)
+  getEquipmentList = async () => {
     const search_info = {};
 
     const params = {
@@ -34,7 +38,7 @@ class EquipmentPage extends React.Component {
       search_info,
     };
 
-    // 나의 장비 목록 조회API
+    // 장비 목록 조회API
     await axios
       .get('http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/equip/api-300-0001', {
         params: {
@@ -46,7 +50,6 @@ class EquipmentPage extends React.Component {
       })
       .then(json => {
         localStorage.setItem('access_token', json.data.data.access_token);
-        console.log('response :: ', json);
         this.props.setEquipmentList(json.data.data);
       })
       .catch(err => {
@@ -65,14 +68,69 @@ class EquipmentPage extends React.Component {
       });
   };
 
+  // 스크롤 List API 추가 호출
+  fetchMoreData = async () => {
+    if (this.props.rest_records < 1) {
+      return false;
+    }
+
+    const params = {
+      access_token: localStorage.getItem('access_token'),
+      page: this.props.page + 1,
+      rows: this.props.rows,
+      _search: this.props._search,
+      search_info: this.state.search_info,
+    };
+
+    // 요청 대상 장비 목록 조회(검색)API
+    await axios
+      .get('http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/equip/api-300-0001', {
+        params: {
+          params: JSON.stringify(params),
+        },
+        headers: {
+          'contents-type': 'application/json',
+        },
+      })
+      .then(json => {
+        localStorage.setItem('access_token', json.data.data.access_token);
+        this.props.addEquipmentList(json.data.data);
+      })
+      .catch(err => {
+        console.log(err);
+
+        // Token error List
+        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+        if (errCodes.indexOf(err.response.data.code) !== -1) {
+          alert(err.response.data.message);
+          window.location.href = '/login';
+        } else {
+          alert(err.response.data.message);
+        }
+      });
+  };
+
+  // search_info 변경
+  changeSearchInfo = search_info => {
+    // state에 search_info 저장
+    this.setState({
+      search_info,
+    });
+  };
+
   render() {
-    const { classes, equip_list } = this.props;
+    const { classes, equip_list, list_load_status } = this.props;
 
     return (
       <React.Fragment>
         <Typography className={classes.title}>장비 관리</Typography>
-        <SelectController />
-        <EquipmentCard cardType="equip" equip_list={equip_list} />
+        <EquipmentForm changeSearchInfo={this.changeSearchInfo} />
+        <EquipmentInfinite
+          equip_list={equip_list}
+          fetchMoreData={this.fetchMoreData}
+          list_load_status={list_load_status}
+        />
       </React.Fragment>
     );
   }
@@ -85,6 +143,7 @@ const mapStateToProps = state => {
     page: state.equipment.page,
     rows: state.equipment.rows,
     _search: state.equipment._search,
+    list_load_status: state.equipment.list_load_status,
   };
 };
 
@@ -92,6 +151,7 @@ const mapStateToProps = state => {
 const mapActionToProps = dispatch => {
   return {
     setEquipmentList: response => dispatch(setEquipmentList(response)),
+    addEquipmentList: response => dispatch(addEquipmentList(response)),
   };
 };
 

@@ -25,7 +25,7 @@ export const getReqTargetEquipment = response => ({
   equip_list: response.equip_list,
 });
 
-// 요청 대상 장비 목록 조회(검색)
+// 요청 대상 장비 목록 조회(스크롤)
 export const addReqTargetEquipment = response => ({
   type: ADD_REQ_TARGET_EQUIPMENT,
   page_info: response.page_info,

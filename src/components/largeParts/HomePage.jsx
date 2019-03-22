@@ -123,7 +123,7 @@ class HomePage extends React.Component {
         ) : (
           <EquipmentCard req_grp="R" />
         )}
-        
+
         <Typography className={classes.myEquipmentList}>
           나의 장비 목록
         </Typography>

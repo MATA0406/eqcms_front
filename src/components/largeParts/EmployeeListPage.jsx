@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import EquipmentCard from 'components/middleParts/EquipmentCard';
-import SelectController from 'components/middleParts/SelectController';
+import EquipmentForm from 'components/middleParts/EquipmentForm';
 
 const styles = {
   title: {
@@ -19,7 +19,7 @@ class EmployeeListPage extends React.Component {
     return (
       <React.Fragment>
         <Typography className={classes.title}>장비 관리</Typography>
-        <SelectController />
+        <EquipmentForm />
         <EquipmentCard />
       </React.Fragment>
     );
