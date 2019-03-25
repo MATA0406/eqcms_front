@@ -16,6 +16,7 @@ import {
   setEquipmentList,
 } from 'store/modules/equipment';
 import { setCommonCdList200, setCommonCdList201 } from 'store/modules/common';
+import EquipmentFormDialog from '../smallParts/EquipmentFormDialog';
 
 const styles = theme => ({
   root: {
@@ -53,6 +54,8 @@ class EquipmentForm extends React.Component {
     equipment: '',
     equipmentStatus: '',
     reqStatus: '',
+    open: false,
+    scroll: 'paper',
   };
 
   componentDidMount = async () => {
@@ -147,21 +150,6 @@ class EquipmentForm extends React.Component {
       });
   };
 
-  // 장비 Select box 컨트롤
-  equipSelectHandle = e => {
-    this.setState(() => ({ equipment: e.target.value }));
-  };
-
-  // 장비상태 Select box 컨트롤
-  equipStatusSelectHandle = e => {
-    this.setState(() => ({ equipmentStatus: e.target.value }));
-  };
-
-  // 요청상태 Select box 컨트롤
-  reqStatusSelectHandle = e => {
-    this.setState(() => ({ reqStatus: e.target.value }));
-  };
-
   // 장비 목록 조회(검색)
   searchEquipmentList = async e => {
     e.preventDefault();
@@ -223,130 +211,163 @@ class EquipmentForm extends React.Component {
       });
   };
 
+  // 장비 Select box 컨트롤
+  equipSelectHandle = e => {
+    this.setState(() => ({ equipment: e.target.value }));
+  };
+
+  // 장비상태 Select box 컨트롤
+  equipStatusSelectHandle = e => {
+    this.setState(() => ({ equipmentStatus: e.target.value }));
+  };
+
+  // 요청상태 Select box 컨트롤
+  reqStatusSelectHandle = e => {
+    this.setState(() => ({ reqStatus: e.target.value }));
+  };
+
+  // 다이얼로그 오픈
+  handleClickOpen = scroll => () => {
+    this.setState({ open: true, scroll });
+  };
+
+  // 다이얼로그 클로즈
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   render() {
     const { classes, equip_tp_cd_list, cd_list_200, cd_list_201 } = this.props;
 
     return (
-      <form className={classes.root} onSubmit={this.searchEquipmentList}>
-        <Grid container spacing={16}>
-          <Grid container item xs={12} sm={4} md={2} lg={2} xl={2}>
-            <TextField
-              select
-              label="장비"
-              id="equipment"
-              name="equipment"
-              className={classes.textField}
-              value={this.state.equipment}
-              onChange={this.equipSelectHandle}
-              SelectProps={{
-                MenuProps: {
-                  className: classes.menu,
-                },
-              }}
-              margin="normal"
-              variant="outlined"
-            >
-              <MenuItem value="all">전체</MenuItem>
-              {equip_tp_cd_list.map(item => (
-                <MenuItem value={item.equip_tp_cd} key={item.equip_tp_cd}>
-                  {item.equip_tp_nm}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
+      <React.Fragment>
+        <form className={classes.root} onSubmit={this.searchEquipmentList}>
+          <Grid container spacing={16}>
+            <Grid container item xs={12} sm={4} md={2} lg={2} xl={2}>
+              <TextField
+                select
+                label="장비"
+                id="equipment"
+                name="equipment"
+                className={classes.textField}
+                value={this.state.equipment}
+                onChange={this.equipSelectHandle}
+                SelectProps={{
+                  MenuProps: {
+                    className: classes.menu,
+                  },
+                }}
+                margin="normal"
+                variant="outlined"
+              >
+                <MenuItem value="all">전체</MenuItem>
+                {equip_tp_cd_list.map(item => (
+                  <MenuItem value={item.equip_tp_cd} key={item.equip_tp_cd}>
+                    {item.equip_tp_nm}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
-          <Grid container item xs={12} sm={4} md={2} lg={2} xl={2}>
-            <TextField
-              select
-              label="장비상태"
-              id="equipmentStatus"
-              name="equipmentStatus"
-              className={classes.textField}
-              value={this.state.equipmentStatus}
-              onChange={this.equipStatusSelectHandle}
-              SelectProps={{
-                MenuProps: {
-                  className: classes.menu,
-                },
-              }}
-              margin="normal"
-              variant="outlined"
-            >
-              <MenuItem value="all">전체</MenuItem>
-              {cd_list_200
-                ? cd_list_200.map(item => (
-                  <MenuItem value={item.cd} key={item.cd}>
-                      {item.cd_nm}
-                    </MenuItem>
-                  ))
-                : ''}
-            </TextField>
-          </Grid>
+            <Grid container item xs={12} sm={4} md={2} lg={2} xl={2}>
+              <TextField
+                select
+                label="장비상태"
+                id="equipmentStatus"
+                name="equipmentStatus"
+                className={classes.textField}
+                value={this.state.equipmentStatus}
+                onChange={this.equipStatusSelectHandle}
+                SelectProps={{
+                  MenuProps: {
+                    className: classes.menu,
+                  },
+                }}
+                margin="normal"
+                variant="outlined"
+              >
+                <MenuItem value="all">전체</MenuItem>
+                {cd_list_200
+                  ? cd_list_200.map(item => (
+                      <MenuItem value={item.cd} key={item.cd}>
+                        {item.cd_nm}
+                      </MenuItem>
+                    ))
+                  : ''}
+              </TextField>
+            </Grid>
 
-          <Grid container item xs={12} sm={4} md={2} lg={2} xl={2}>
-            <TextField
-              select
-              label="요청상태"
-              id="reqStatus"
-              name="reqStatus"
-              className={classes.textField}
-              value={this.state.reqStatus}
-              onChange={this.reqStatusSelectHandle}
-              SelectProps={{
-                MenuProps: {
-                  className: classes.menu,
-                },
-              }}
-              margin="normal"
-              variant="outlined"
-            >
-              <MenuItem value="all">전체</MenuItem>
-              {cd_list_201
-                ? cd_list_201.map(item => (
-                  <MenuItem value={item.cd} key={item.cd}>
-                      {item.cd_nm}
-                    </MenuItem>
-                  ))
-                : ''}
-            </TextField>
-          </Grid>
+            <Grid container item xs={12} sm={4} md={2} lg={2} xl={2}>
+              <TextField
+                select
+                label="요청상태"
+                id="reqStatus"
+                name="reqStatus"
+                className={classes.textField}
+                value={this.state.reqStatus}
+                onChange={this.reqStatusSelectHandle}
+                SelectProps={{
+                  MenuProps: {
+                    className: classes.menu,
+                  },
+                }}
+                margin="normal"
+                variant="outlined"
+              >
+                <MenuItem value="all">전체</MenuItem>
+                {cd_list_201
+                  ? cd_list_201.map(item => (
+                      <MenuItem value={item.cd} key={item.cd}>
+                        {item.cd_nm}
+                      </MenuItem>
+                    ))
+                  : ''}
+              </TextField>
+            </Grid>
 
-          <Grid container item xs={12} sm={6} md={2} lg={3} xl={3}>
-            <TextField
-              id="keyword"
-              name="keyword"
-              label="Search"
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-            />
-          </Grid>
+            <Grid container item xs={12} sm={6} md={2} lg={3} xl={3}>
+              <TextField
+                id="keyword"
+                name="keyword"
+                label="Search"
+                className={classes.textField}
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
 
-          <Grid container item xs={12} sm={3} md={2} lg={1} xl={1}>
-            <Button
-              type="submit"
-              variant="contained"
-              className={classes.searchBtn}
-              size="large"
-              color="primary"
-            >
-              검색
-            </Button>
-          </Grid>
+            <Grid container item xs={12} sm={3} md={2} lg={1} xl={1}>
+              <Button
+                type="submit"
+                variant="contained"
+                className={classes.searchBtn}
+                size="large"
+                color="primary"
+              >
+                검색
+              </Button>
+            </Grid>
 
-          <Grid container item xs={12} sm={3} md={2} lg={2} xl={2}>
-            <Button
-              type="submit"
-              variant="contained"
-              className={classes.registerBtn}
-              size="large"
-              color="primary"
-            >
-              장비 등록
-            </Button>
+            <Grid container item xs={12} sm={3} md={2} lg={2} xl={2}>
+              <Button
+                type="submit"
+                variant="contained"
+                className={classes.registerBtn}
+                size="large"
+                color="primary"
+                onClick={this.handleClickOpen('paper')}
+              >
+                장비 등록
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-      </form>
+        </form>
+        <EquipmentFormDialog
+          open={this.state.open}
+          scroll={this.state.scroll}
+          handleClose={this.handleClose}
+        />
+      </React.Fragment>
     );
   }
 }

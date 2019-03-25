@@ -26,6 +26,7 @@ class InfiniteComponent extends React.Component {
         dataLength={equip_list.length}
         next={fetchMoreData}
         hasMore={list_load_status}
+        scrollThreshold="99%"
         loader={<LinearProgress />}
       >
         <Typography color="default">검색결과 ({page_info.records})</Typography>

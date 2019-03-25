@@ -42,6 +42,7 @@ class EquipmentInfinite extends React.Component {
         hasMore={list_load_status}
         scrollThreshold="99%"
         style={{ overflow: 'inherit' }}
+        loader={<LinearProgress />}
       >
         <Grid container spacing={24}>
           {equip_list
