@@ -69,15 +69,19 @@ const styles = theme => ({
     marginTop: '7px',
   },
   fileBtn: {
-    width: '50%',
+    width: '100%',
   },
   dialogAttr: {
     width: 700,
   },
   bigAvatar: {
     margin: 10,
-    width: 150,
-    height: 150,
+    width: 200,
+    height: 200,
+  },
+  dateArea: {
+    marginBottom: '15px',
+    marginTop: '15px',
   },
 });
 
@@ -85,10 +89,28 @@ class ReqEquipDialog extends React.Component {
   state = {
     selectValue: 'all',
     search_info: {},
+    file: '',
+    imagePreviewUrl: '',
   };
 
   componentDidMount() {
     this.getEquipTpCdList();
+  }
+
+  _handleImageChange(e) {
+    e.preventDefault();
+
+    const reader = new FileReader();
+    const file = e.target.files[0];
+
+    reader.onloadend = () => {
+      this.setState({
+        file,
+        imagePreviewUrl: reader.result,
+      });
+    };
+
+    reader.readAsDataURL(file);
   }
 
   // 장비 구분 코드 목록 조회
@@ -243,6 +265,14 @@ class ReqEquipDialog extends React.Component {
   render() {
     const { open, scroll, handleClose, classes, equip_tp_cd_list } = this.props;
 
+    const { imagePreviewUrl } = this.state;
+    let $imagePreview = null;
+    if (imagePreviewUrl) {
+      $imagePreview = imagePreviewUrl;
+    } else {
+      $imagePreview = `${process.env.PUBLIC_URL}/images/noImage.gif`;
+    }
+
     return (
       <div>
         <Dialog
@@ -259,7 +289,7 @@ class ReqEquipDialog extends React.Component {
               <Grid container justify="center" alignItems="center">
                 <Avatar
                   alt="Remy Sharp"
-                  src={process.env.PUBLIC_URL + '/images/macImage.jpg'}
+                  src={$imagePreview}
                   className={classes.bigAvatar}
                 />
               </Grid>
@@ -267,24 +297,38 @@ class ReqEquipDialog extends React.Component {
                 container
                 item
                 xs={12}
+                md={3}
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
                 zeroMinWidth
               >
-                장비 이미지:
-                <Button
-                  containerElement="label" // <-- Just add me!
-                  label="My Label"
-                  className={classes.fileBtn}
-                >
-                  <input type="file" />
+                <Typography component="span" variant="h6">
+                  장비 이미지:
+                </Typography>
+              </Grid>
+              <Grid
+                container
+                item
+                xs={12}
+                md={7}
+                direction="row"
+                justify="flex-start"
+                alignItems="center"
+                zeroMinWidth
+              >
+                <Button variant="outlined" className={classes.fileBtn}>
+                  <input
+                    type="file"
+                    onChange={e => this._handleImageChange(e)}
+                  />
                 </Button>
               </Grid>
               <Grid
                 container
                 item
                 xs={12}
+                md={12}
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
@@ -303,6 +347,7 @@ class ReqEquipDialog extends React.Component {
                 container
                 item
                 xs={12}
+                md={12}
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
@@ -336,83 +381,54 @@ class ReqEquipDialog extends React.Component {
                 container
                 item
                 xs={12}
+                md={12}
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
                 zeroMinWidth
               >
                 <TextField
-                  select
-                  label="사용자"
-                  id="equipTpCd"
-                  name="equipTpCd"
+                  id="keyword"
+                  name="keyword"
+                  label="시리얼번호"
                   className={classes.textField}
-                  value={this.state.selectValue}
-                  onChange={this.selectHandle}
-                  SelectProps={{
-                    MenuProps: {
-                      className: classes.menu,
-                    },
-                  }}
                   margin="normal"
                   variant="outlined"
-                >
-                  <MenuItem value="all">전체</MenuItem>
-                  {equip_tp_cd_list.map(item => (
-                    <MenuItem value={item.equip_tp_cd} key={item.equip_tp_cd}>
-                      {item.equip_tp_nm}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                />
               </Grid>
               <Grid
                 container
                 item
                 xs={12}
+                md={2}
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
                 zeroMinWidth
+                className={classes.dateArea}
               >
-                {/* <MaterialUIPickers /> */}
+                <Typography component="span" variant="h6">
+                  구입일자:
+                </Typography>
               </Grid>
               <Grid
                 container
                 item
                 xs={12}
+                md={9}
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
                 zeroMinWidth
+                className={classes.dateArea}
               >
-                <TextField
-                  select
-                  label="장비상태"
-                  id="equipTpCd"
-                  name="equipTpCd"
-                  className={classes.textField}
-                  value={this.state.selectValue}
-                  onChange={this.selectHandle}
-                  SelectProps={{
-                    MenuProps: {
-                      className: classes.menu,
-                    },
-                  }}
-                  margin="normal"
-                  variant="outlined"
-                >
-                  <MenuItem value="all">전체</MenuItem>
-                  {equip_tp_cd_list.map(item => (
-                    <MenuItem value={item.equip_tp_cd} key={item.equip_tp_cd}>
-                      {item.equip_tp_nm}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                <MaterialUIPickers />
               </Grid>
               <Grid
                 container
                 item
                 xs={12}
+                md={12}
                 direction="row"
                 justify="space-evenly"
                 alignItems="center"
@@ -422,6 +438,7 @@ class ReqEquipDialog extends React.Component {
                   container
                   item
                   xs={4}
+                  md={4}
                   direction="row"
                   justify="flex-start"
                   alignItems="center"
@@ -442,6 +459,7 @@ class ReqEquipDialog extends React.Component {
                   container
                   item
                   xs={4}
+                  md={4}
                   direction="row"
                   justify="flex-start"
                   alignItems="center"
