@@ -16,12 +16,12 @@ import {
   setEquipmentList,
 } from 'store/modules/equipment';
 import { setCommonCdList200, setCommonCdList201 } from 'store/modules/common';
-import EquipmentFormDialog from '../smallParts/EquipmentFormDialog';
 
 const styles = theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
+    marginBottom: '15px',
   },
   textField: {
     marginLeft: theme.spacing.unit,
@@ -29,8 +29,6 @@ const styles = theme => ({
     width: '100%',
   },
   searchBtn: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
     width: '100%',
     height: '55px',
     marginTop: '15px',
@@ -41,8 +39,6 @@ const styles = theme => ({
     },
   },
   registerBtn: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
     width: '100%',
     height: '55px',
     marginTop: '15px',
@@ -54,8 +50,6 @@ class EquipmentForm extends React.Component {
     equipment: '',
     equipmentStatus: '',
     reqStatus: '',
-    open: false,
-    scroll: 'paper',
   };
 
   componentDidMount = async () => {
@@ -226,18 +220,14 @@ class EquipmentForm extends React.Component {
     this.setState(() => ({ reqStatus: e.target.value }));
   };
 
-  // 다이얼로그 오픈
-  handleClickOpen = scroll => () => {
-    this.setState({ open: true, scroll });
-  };
-
-  // 다이얼로그 클로즈
-  handleClose = () => {
-    this.setState({ open: false });
-  };
-
   render() {
-    const { classes, equip_tp_cd_list, cd_list_200, cd_list_201 } = this.props;
+    const {
+      classes,
+      equip_tp_cd_list,
+      cd_list_200,
+      cd_list_201,
+      handleClickOpen,
+    } = this.props;
 
     return (
       <React.Fragment>
@@ -355,18 +345,13 @@ class EquipmentForm extends React.Component {
                 className={classes.registerBtn}
                 size="large"
                 color="primary"
-                onClick={this.handleClickOpen('paper')}
+                onClick={handleClickOpen('paper')}
               >
                 장비 등록
               </Button>
             </Grid>
           </Grid>
         </form>
-        <EquipmentFormDialog
-          open={this.state.open}
-          scroll={this.state.scroll}
-          handleClose={this.handleClose}
-        />
       </React.Fragment>
     );
   }

@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 
 import EquipmentInfinite from 'components/middleParts/EquipmentInfinite';
 import EquipmentForm from 'components/middleParts/EquipmentForm';
+import EquipmentFormDialog from '../smallParts/EquipmentFormDialog';
 
 import { setEquipmentList, addEquipmentList } from 'store/modules/equipment';
 
@@ -20,6 +21,8 @@ const styles = {
 class EquipmentPage extends React.Component {
   state = {
     search_info: {},
+    open: false,
+    scroll: 'paper',
   };
 
   componentDidMount() {
@@ -119,17 +122,36 @@ class EquipmentPage extends React.Component {
     });
   };
 
+  // 다이얼로그 오픈
+  handleClickOpen = scroll => () => {
+    this.setState({ open: true, scroll });
+  };
+
+  // 다이얼로그 클로즈
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   render() {
     const { classes, equip_list, list_load_status } = this.props;
 
     return (
       <React.Fragment>
         <Typography className={classes.title}>장비 관리</Typography>
-        <EquipmentForm changeSearchInfo={this.changeSearchInfo} />
+        <EquipmentForm
+          changeSearchInfo={this.changeSearchInfo}
+          handleClickOpen={this.handleClickOpen}
+        />
         <EquipmentInfinite
           equip_list={equip_list}
           fetchMoreData={this.fetchMoreData}
           list_load_status={list_load_status}
+          handleClickOpen={this.handleClickOpen}
+        />
+        <EquipmentFormDialog
+          open={this.state.open}
+          scroll={this.state.scroll}
+          handleClose={this.handleClose}
         />
       </React.Fragment>
     );

@@ -5,6 +5,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 
 import ButtonComponent from './ButtonComponent';
 
@@ -22,11 +23,13 @@ const styles = {
   cardImg: {
     width: 70,
   },
-  cardBack: {},
+  equiptitle: {
+    fontSize: 18,
+  },
 };
 
 function CardComponent(props) {
-  const { classes, req_grp, equip_info } = props;
+  const { classes, req_grp, equip_info, handleClickOpen } = props;
 
   return (
     <Grid container item xs={12} sm={6} md={4} lg={3} xl={2}>
@@ -85,14 +88,24 @@ function CardComponent(props) {
                 alignItems="center"
                 zeroMinWidth
               >
-                <Typography
+                {/* <Typography
                   noWrap
                   variant="h6"
                   component="h2"
                   title={equip_info.equip_nm}
+                  onClick={handleClickOpen}
                 >
                   {equip_info.equip_nm}
-                </Typography>
+                </Typography> */}
+                <Button
+                  noWrap
+                  className={classes.equiptitle}
+                  variant="text"
+                  size="large"
+                  onClick={handleClickOpen('paper')}
+                >
+                  {equip_info.equip_nm}
+                </Button>
               </Grid>
             </Grid>
             <Grid

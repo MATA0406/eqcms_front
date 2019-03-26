@@ -10,6 +10,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import RequestCard from './RequestCard';
 import CardComponent from 'components/smallParts/CardComponent';
 
+import EquipmentFormDialog from '../smallParts/EquipmentFormDialog';
+
 const styles = {
   root: {
     flexGrow: 1,
@@ -26,6 +28,21 @@ const styles = {
 };
 
 class EquipmentInfinite extends React.Component {
+  state = {
+    open: false,
+    scroll: 'paper',
+  };
+
+  // 다이얼로그 오픈
+  handleClickOpen = scroll => () => {
+    this.setState({ open: true, scroll });
+  };
+
+  // 다이얼로그 클로즈
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   render() {
     const {
       classes,
@@ -33,29 +50,35 @@ class EquipmentInfinite extends React.Component {
       equip_list,
       fetchMoreData,
       list_load_status,
+      open,
+      scroll,
+      handleClickOpen,
     } = this.props;
 
     return (
-      <InfiniteScroll
-        dataLength={equip_list.length}
-        next={fetchMoreData}
-        hasMore={list_load_status}
-        scrollThreshold="99%"
-        style={{ overflow: 'inherit' }}
-        loader={<LinearProgress />}
-      >
-        <Grid container spacing={24}>
-          {equip_list
-            ? equip_list.map((equip_info, index) => (
-                <CardComponent
-                  req_grp={equip_info.req_grp}
-                  equip_info={equip_info}
-                  key={index}
-                />
-              ))
-            : ''}
-        </Grid>
-      </InfiniteScroll>
+      <React.Fragment>
+        <InfiniteScroll
+          dataLength={equip_list.length}
+          next={fetchMoreData}
+          hasMore={list_load_status}
+          scrollThreshold="99%"
+          style={{ overflow: 'inherit' }}
+          loader={<LinearProgress />}
+        >
+          <Grid container spacing={24}>
+            {equip_list
+              ? equip_list.map((equip_info, index) => (
+                  <CardComponent
+                    req_grp={equip_info.req_grp}
+                    equip_info={equip_info}
+                    key={index}
+                    handleClickOpen={handleClickOpen}
+                  />
+                ))
+              : ''}
+          </Grid>
+        </InfiniteScroll>
+      </React.Fragment>
     );
   }
 }

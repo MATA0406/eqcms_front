@@ -18,7 +18,7 @@ const styles = {
 
 class EquipmentCard extends React.Component {
   render() {
-    const { classes, req_grp, equip_list } = this.props;
+    const { classes, req_grp, equip_list, handleClickOpen } = this.props;
 
     return (
       <div className={classes.root}>
@@ -29,6 +29,7 @@ class EquipmentCard extends React.Component {
                   req_grp={req_grp}
                   equip_info={equip_info}
                   key={index}
+                  handleClickOpen={handleClickOpen}
                 />
               ))
             : ''}

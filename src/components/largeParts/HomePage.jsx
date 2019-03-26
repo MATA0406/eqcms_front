@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import EquipmentCard from 'components/middleParts/EquipmentCard';
 
 import { getReqEquipment, getMyEquipment } from 'store/modules/home';
+import EquipmentFormDialog from '../smallParts/EquipmentFormDialog';
 
 const styles = {
   requestEquipmentList: {
@@ -22,6 +23,11 @@ const styles = {
 };
 
 class HomePage extends React.Component {
+  state = {
+    open: false,
+    scroll: 'paper',
+  };
+
   componentDidMount() {
     this.f_getReqEquipment();
   }
@@ -106,6 +112,16 @@ class HomePage extends React.Component {
       });
   };
 
+  // 다이얼로그 오픈
+  handleClickOpen = scroll => () => {
+    this.setState({ open: true, scroll });
+  };
+
+  // 다이얼로그 클로즈
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   render() {
     const { classes, req_equip_list, my_equip_list } = this.props;
 
@@ -119,9 +135,10 @@ class HomePage extends React.Component {
             history={this.props.history}
             req_grp="R"
             equip_list={req_equip_list}
+            handleClickOpen={this.handleClickOpen}
           />
         ) : (
-          <EquipmentCard req_grp="R" />
+          <EquipmentCard req_grp="R" handleClickOpen={this.handleClickOpen} />
         )}
 
         <Typography className={classes.myEquipmentList}>
@@ -132,10 +149,16 @@ class HomePage extends React.Component {
             history={this.props.history}
             req_grp="M"
             equip_list={my_equip_list}
+            handleClickOpen={this.handleClickOpen}
           />
         ) : (
           ''
         )}
+        <EquipmentFormDialog
+          open={this.state.open}
+          scroll={this.state.scroll}
+          handleClose={this.handleClose}
+        />
       </React.Fragment>
     );
   }

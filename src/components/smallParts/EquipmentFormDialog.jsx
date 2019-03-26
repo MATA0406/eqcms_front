@@ -34,21 +34,8 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
-  margin: {
-    margin: theme.spacing.unit,
-  },
-  bootstrapFormLabel: {
-    fontSize: 18,
-  },
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
   textField: {
     width: '100%',
-  },
-  dense: {
-    marginTop: 16,
   },
   menu: {
     width: 200,
@@ -71,9 +58,6 @@ const styles = theme => ({
   fileBtn: {
     width: '100%',
   },
-  dialogAttr: {
-    width: 700,
-  },
   bigAvatar: {
     margin: 10,
     width: 200,
@@ -87,30 +71,18 @@ const styles = theme => ({
 
 class ReqEquipDialog extends React.Component {
   state = {
-    selectValue: 'all',
-    search_info: {},
     file: '',
     imagePreviewUrl: '',
+    buyDt: new Date().toISOString().split('T')[0],
+    equipNm: '',
+    serialNo: '',
+    equipTpCd: 'all',
+    imgUrl: '',
   };
 
   componentDidMount() {
+    // 장비 구분 코드 목록 조회
     this.getEquipTpCdList();
-  }
-
-  _handleImageChange(e) {
-    e.preventDefault();
-
-    const reader = new FileReader();
-    const file = e.target.files[0];
-
-    reader.onloadend = () => {
-      this.setState({
-        file,
-        imagePreviewUrl: reader.result,
-      });
-    };
-
-    reader.readAsDataURL(file);
   }
 
   // 장비 구분 코드 목록 조회
@@ -152,119 +124,76 @@ class ReqEquipDialog extends React.Component {
       });
   };
 
-  // 요청 대상 장비 목록 조회(검색)
-  reqEquipSearch = async e => {
+  // 장비 등록
+  equipmentRegister = e => {
     e.preventDefault();
-
-    if (e.target.equipTpCd.value === 'all') {
-      e.target.equipTpCd.value = '';
-    }
-
-    // 검색 정보
-    const search_info = {
-      equip_tp_cd: e.target.equipTpCd.value,
-      keyword: e.target.keyword.value,
-    };
-
-    const params = {
-      access_token: localStorage.getItem('access_token'),
-      page: 1,
-      rows: this.props.rows,
-      _search: this.props._search,
-      search_info,
-    };
-
-    // 요청 대상 장비 목록 조회(검색)API
-    await axios
-      .get(
-        'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/dashboard/api-200-0002',
-        {
-          params: {
-            params: JSON.stringify(params),
-          },
-          headers: {
-            'contents-type': 'application/json',
-          },
-        },
-      )
-      .then(json => {
-        localStorage.setItem('access_token', json.data.data.access_token);
-        this.props.getReqTargetEquipment(json.data.data);
-
-        // state에 search_info 저장
-        this.setState(() => ({
-          search_info,
-        }));
-      })
-      .catch(err => {
-        console.log(err.response.data);
-
-        // Token error List
-        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
-
-        if (errCodes.indexOf(err.response.data.code) !== -1) {
-          alert(err.response.data.message);
-          window.location.href = '/login';
-        } else {
-          alert(err.response.data.message);
-        }
-      });
+    console.log('equip_nm :: ', e.target.equip_nm.value);
+    console.log('serial_no ::', e.target.serial_no.value);
+    console.log('equipTpCd :: ', e.target.equipTpCd.value);
+    console.log('buy_dt ::', this.state.buyDt);
+    console.log('img_url :: ', e.target.img_url.value);
   };
 
-  // 스크롤 List API 추가 호출
-  fetchMoreData = async () => {
-    if (this.props.rest_records < 1) {
-      return false;
-    }
+  // 이미지 체인지
+  _handleImageChange = e => {
+    e.preventDefault();
 
-    const params = {
-      access_token: localStorage.getItem('access_token'),
-      page: this.props.page + 1,
-      rows: this.props.rows,
-      _search: this.props._search,
-      search_info: this.state.search_info,
+    console.log(e.target.value);
+    const reader = new FileReader();
+    const file = e.target.files[0];
+    console.log(file.name);
+
+    reader.onloadend = () => {
+      this.setState({
+        file,
+        imagePreviewUrl: reader.result,
+        imgUrl: file.name,
+      });
     };
 
-    // 요청 대상 장비 목록 조회(검색)API
-    await axios
-      .get(
-        'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/dashboard/api-200-0002',
-        {
-          params: {
-            params: JSON.stringify(params),
-          },
-          headers: {
-            'contents-type': 'application/json',
-          },
-        },
-      )
-      .then(json => {
-        localStorage.setItem('access_token', json.data.data.access_token);
-        this.props.addReqTargetEquipment(json.data.data);
-      })
-      .catch(err => {
-        console.log(err.response.data);
+    reader.readAsDataURL(file);
+  };
 
-        // Token error List
-        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+  // 장비명
+  _handleEquipNmChange = e => {
+    e.preventDefault();
 
-        if (errCodes.indexOf(err.response.data.code) !== -1) {
-          alert(err.response.data.message);
-          window.location.href = '/login';
-        } else {
-          alert(err.response.data.message);
-        }
-      });
+    this.setState({
+      equipNm: e.target.value,
+    });
+  };
+
+  // 시리얼
+  _handleSerialNoChange = e => {
+    e.preventDefault();
+    this.setState({
+      serialNo: e.target.value,
+    });
+  };
+
+  // 장비구분
+  _handleEquipTpCdChange = e => {
+    e.preventDefault();
+    this.setState({
+      equipTpCd: e.target.value,
+    });
   };
 
   // 장비 Select box 컨트롤
   selectHandle = item => {
-    this.setState(() => ({ selectValue: item.target.value }));
+    this.setState(() => ({ equipTpCd: item.target.value }));
+  };
+
+  // 데이트피커 value 변환 => setState()
+  handleDateChange = date => {
+    console.log('dateISO :: ', date.toISOString().split('T')[0]);
+    this.setState({ buyDt: date.toISOString().split('T')[0] });
   };
 
   render() {
     const { open, scroll, handleClose, classes, equip_tp_cd_list } = this.props;
 
+    // 장비 이미지 미리보기
     const { imagePreviewUrl } = this.state;
     let $imagePreview = null;
     if (imagePreviewUrl) {
@@ -285,10 +214,10 @@ class ReqEquipDialog extends React.Component {
         >
           <Divider />
           <DialogContent>
-            <form className={classes.root} onSubmit={this.reqEquipSearch}>
+            <form className={classes.root} onSubmit={this.equipmentRegister}>
               <Grid container justify="center" alignItems="center">
                 <Avatar
-                  alt="Remy Sharp"
+                  alt="Image"
                   src={$imagePreview}
                   className={classes.bigAvatar}
                 />
@@ -335,12 +264,12 @@ class ReqEquipDialog extends React.Component {
                 zeroMinWidth
               >
                 <TextField
-                  id="keyword"
-                  name="keyword"
                   label="모델명"
                   className={classes.textField}
                   margin="normal"
                   variant="outlined"
+                  onChange={this._handleEquipNmChange}
+                  value={this.state.equipNm}
                 />
               </Grid>
               <Grid
@@ -356,10 +285,8 @@ class ReqEquipDialog extends React.Component {
                 <TextField
                   select
                   label="장비구분"
-                  id="equipTpCd"
-                  name="equipTpCd"
                   className={classes.textField}
-                  value={this.state.selectValue}
+                  value={this.state.equipTpCd}
                   onChange={this.selectHandle}
                   SelectProps={{
                     MenuProps: {
@@ -388,12 +315,12 @@ class ReqEquipDialog extends React.Component {
                 zeroMinWidth
               >
                 <TextField
-                  id="keyword"
-                  name="keyword"
                   label="시리얼번호"
                   className={classes.textField}
                   margin="normal"
                   variant="outlined"
+                  onChange={this._handleSerialNoChange}
+                  value={this.state.serialNo}
                 />
               </Grid>
               <Grid
@@ -422,7 +349,10 @@ class ReqEquipDialog extends React.Component {
                 zeroMinWidth
                 className={classes.dateArea}
               >
-                <MaterialUIPickers />
+                <MaterialUIPickers
+                  buyDt={this.state.buyDt}
+                  handleDateChange={this.handleDateChange}
+                />
               </Grid>
               <Grid
                 container
@@ -445,7 +375,6 @@ class ReqEquipDialog extends React.Component {
                   zeroMinWidth
                 >
                   <Button
-                    type="submit"
                     variant="contained"
                     className={classes.cancleBtn}
                     size="large"
