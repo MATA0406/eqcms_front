@@ -98,11 +98,10 @@ function CardComponent(props) {
                   {equip_info.equip_nm}
                 </Typography> */}
                 <Button
-                  noWrap
                   className={classes.equiptitle}
                   variant="text"
                   size="large"
-                  onClick={handleClickOpen('paper')}
+                  onClick={handleClickOpen('paper', equip_info.equip_no)}
                 >
                   {equip_info.equip_nm}
                 </Button>

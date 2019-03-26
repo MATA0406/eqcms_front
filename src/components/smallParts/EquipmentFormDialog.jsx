@@ -21,11 +21,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
 import blue from '@material-ui/core/colors/blue';
 
-import {
-  getEquipTpCdList,
-  getReqTargetEquipment,
-  addReqTargetEquipment,
-} from 'store/modules/home';
+import { getEquipTpCdList } from 'store/modules/home';
 
 import MaterialUIPickers from 'components/smallParts/MaterialUIPickers';
 
@@ -417,13 +413,6 @@ class ReqEquipDialog extends React.Component {
 const mapStateToProps = state => {
   return {
     equip_tp_cd_list: state.home.equip_tp_cd_list,
-    equip_list: state.home.equip_list,
-    page_info: state.home.page_info,
-    page: state.home.page,
-    rows: state.home.rows,
-    rest_records: state.home.rest_records,
-    list_load_status: state.home.list_load_status,
-    _search: state.home._search,
   };
 };
 
@@ -432,10 +421,6 @@ const mapActionToProps = dispatch => {
   return {
     getEquipTpCdList: equip_tp_cd_list =>
       dispatch(getEquipTpCdList(equip_tp_cd_list)),
-    getReqTargetEquipment: response =>
-      dispatch(getReqTargetEquipment(response)),
-    addReqTargetEquipment: response =>
-      dispatch(addReqTargetEquipment(response)),
   };
 };
 
