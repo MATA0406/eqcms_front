@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import loginReducer from './login';
 import home from './home';
 import equipment from './equipment';
+import employee from './employee';
 import common from './common';
 
 // 리듀서가 여러개일대는 redux 의 내장함수인 combineReducers 를 사용하여 리듀서를 하나로 합치는 작업을 합니다.
@@ -10,6 +11,7 @@ export default combineReducers({
   home,
   loginReducer,
   equipment,
+  employee,
   common,
   // 다른 리듀서를 만들게되면 여기에 넣어줌..
 });

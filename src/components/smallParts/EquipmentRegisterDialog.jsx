@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import AWS from 'aws-sdk';
 
 // Dialog
 import Button from '@material-ui/core/Button';
@@ -22,10 +23,11 @@ import Grid from '@material-ui/core/Grid';
 import blue from '@material-ui/core/colors/blue';
 
 import { getEquipTpCdList } from 'store/modules/home';
+import { setEmployeeList } from 'store/modules/employee';
 
 import MaterialUIPickers from 'components/smallParts/MaterialUIPickers';
 
-const styles = theme => ({
+const styles = () => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -65,14 +67,14 @@ const styles = theme => ({
   },
 });
 
-class ReqEquipDialog extends React.Component {
+class EquipmentRegisterDialog extends React.Component {
   state = {
     file: '',
     imagePreviewUrl: '',
     buyDt: new Date().toISOString().split('T')[0],
     equipNm: '',
     serialNo: '',
-    equipTpCd: 'all',
+    equipTpCd: '',
     imgUrl: '',
   };
 
@@ -123,31 +125,123 @@ class ReqEquipDialog extends React.Component {
   // 장비 등록
   equipmentRegister = e => {
     e.preventDefault();
-    console.log('equip_nm :: ', e.target.equip_nm.value);
-    console.log('serial_no ::', e.target.serial_no.value);
-    console.log('equipTpCd :: ', e.target.equipTpCd.value);
-    console.log('buy_dt ::', this.state.buyDt);
-    console.log('img_url :: ', e.target.img_url.value);
+
+    if (this.state.file === '') {
+      alert('파일을 선택해주세요.');
+      return false;
+    }
+    if (this.state.equipNm === '') {
+      alert('모델명을 입력해주세요.');
+      return false;
+    }
+    if (this.state.equipTpCd === '') {
+      alert('장비구분을 선택해주세요.');
+      return false;
+    }
+    if (this.state.serialNo === '') {
+      alert('시리얼번호를 입력해주세요.');
+      return false;
+    }
+    if (this.state.buyDt === '') {
+      alert('구입일자를 선택해주세요.');
+      return false;
+    }
+
+    // 장비 이미지 업로드
+    return this.imageUpload(this.state.file)
+      .then(async () => {
+        const data = {
+          equip_nm: this.state.equipNm,
+          serial_no: this.state.serialNo,
+          equip_tp_cd: this.state.equipTpCd,
+          buy_dt: this.state.buyDt,
+          img_url: `/upload/${this.state.imgUrl}`,
+        };
+
+        // 장비 등록 API
+        await axios
+          .post(
+            'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/equip/api-300-0003',
+            data,
+            {
+              headers: {
+                access_token: localStorage.getItem('access_token'),
+              },
+            },
+          )
+          .then(response => {
+            console.log('success :: ', response);
+            alert('등록이 완료되었습니다.');
+            window.location.href = '/equipment';
+          })
+          .catch(err => {
+            console.error(err);
+
+            // Token error List
+            const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+            if (errCodes.indexOf(err.response.data.code) !== -1) {
+              alert(err.response.data.message);
+              // this.props.history.push('/login');
+              window.location.href = '/login';
+            } else {
+              alert(err.response.data.message);
+            }
+          });
+      })
+      .catch(err => {
+        console.error(err);
+
+        // Token error List
+        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+        if (errCodes.indexOf(err.response.data.code) !== -1) {
+          alert(err.response.data.message);
+          // this.props.history.push('/login');
+          window.location.href = '/login';
+        } else {
+          alert(err.response.data.message);
+        }
+      });
   };
 
-  // 이미지 체인지
-  _handleImageChange = e => {
-    e.preventDefault();
+  // 이미지 업로드(S3)
+  imageUpload = async _file => {
+    const file = _file;
 
-    console.log(e.target.value);
-    const reader = new FileReader();
-    const file = e.target.files[0];
-    console.log(file.name);
+    // 아마존 S3에 저장하려면 먼저 설정을 업데이트합니다.
+    AWS.config.region = 'ap-northeast-2'; // Seoul
+    AWS.config.update({
+      accessKeyId: 'AKIAI7QANZMSNH5MWUBA',
+      secretAccessKey: '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',
+    });
 
-    reader.onloadend = () => {
-      this.setState({
-        file,
-        imagePreviewUrl: reader.result,
-        imgUrl: file.name,
-      });
+    const s3_params = {
+      Bucket: 'penta-equip-upload',
+      Key: `upload/${file.name}`,
+      ACL: 'public-read',
+      ContentType: file.type,
+      Body: file,
     };
 
-    reader.readAsDataURL(file);
+    const s3obj = new AWS.S3({ params: s3_params });
+
+    return new Promise((resolve, reject) => {
+      s3obj
+        .upload()
+        .on('httpUploadProgress', evt => {
+          console.log('evt :: ', evt);
+        })
+        .send((err, data) => {
+          if (err) {
+            console.log('err :: ', err);
+            reject(new Error('Request is failed'));
+          } else {
+            console.log('data :: ', data);
+            resolve(data);
+          }
+        });
+    });
   };
 
   // 장비명
@@ -178,6 +272,26 @@ class ReqEquipDialog extends React.Component {
   // 장비 Select box 컨트롤
   selectHandle = item => {
     this.setState(() => ({ equipTpCd: item.target.value }));
+  };
+
+  // 이미지 체인지
+  _handleImageChange = e => {
+    e.preventDefault();
+
+    console.log(e.target.value);
+    const reader = new FileReader();
+    const file = e.target.files[0];
+    console.log(file.name);
+
+    reader.onloadend = () => {
+      this.setState({
+        file,
+        imagePreviewUrl: reader.result,
+        imgUrl: file.name,
+      });
+    };
+
+    reader.readAsDataURL(file);
   };
 
   // 데이트피커 value 변환 => setState()
@@ -280,7 +394,7 @@ class ReqEquipDialog extends React.Component {
               >
                 <TextField
                   select
-                  label="장비구분"
+                  label="장비 구분"
                   className={classes.textField}
                   value={this.state.equipTpCd}
                   onChange={this.selectHandle}
@@ -292,7 +406,6 @@ class ReqEquipDialog extends React.Component {
                   margin="normal"
                   variant="outlined"
                 >
-                  <MenuItem value="all">전체</MenuItem>
                   {equip_tp_cd_list.map(item => (
                     <MenuItem value={item.equip_tp_cd} key={item.equip_tp_cd}>
                       {item.equip_tp_nm}
@@ -421,6 +534,7 @@ const mapActionToProps = dispatch => {
   return {
     getEquipTpCdList: equip_tp_cd_list =>
       dispatch(getEquipTpCdList(equip_tp_cd_list)),
+    setEmployeeList: emp_list => dispatch(setEmployeeList(emp_list)),
   };
 };
 
@@ -428,5 +542,5 @@ export default withStyles(styles)(
   connect(
     mapStateToProps,
     mapActionToProps,
-  )(withRouter(ReqEquipDialog)),
+  )(withRouter(EquipmentRegisterDialog)),
 );

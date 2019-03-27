@@ -10,7 +10,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import RequestCard from './RequestCard';
 import CardComponent from 'components/smallParts/CardComponent';
 
-import EquipmentFormDialog from '../smallParts/EquipmentFormDialog';
+import EquipmentModifyDialog from '../smallParts/EquipmentModifyDialog';
 
 const styles = {
   root: {

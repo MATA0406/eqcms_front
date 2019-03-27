@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import EquipmentCard from 'components/middleParts/EquipmentCard';
 
 import { getReqEquipment, getMyEquipment } from 'store/modules/home';
-import EquipmentFormDialog from '../smallParts/EquipmentFormDialog';
+import EquipmentModifyDialog from '../smallParts/EquipmentModifyDialog';
 
 const styles = {
   requestEquipmentList: {
@@ -154,7 +154,7 @@ class HomePage extends React.Component {
         ) : (
           ''
         )}
-        <EquipmentFormDialog
+        <EquipmentModifyDialog
           open={this.state.open}
           scroll={this.state.scroll}
           handleClose={this.handleClose}

@@ -12,7 +12,8 @@ import EquipmentForm from 'components/middleParts/EquipmentForm';
 import { setEquipmentList, addEquipmentList } from 'store/modules/equipment';
 import { setEquipmentInfo } from 'store/modules/equipment';
 
-import EquipmentFormDialog from '../smallParts/EquipmentFormDialog';
+import EquipmentRegisterDialog from '../smallParts/EquipmentRegisterDialog';
+import EquipmentModifyDialog from '../smallParts/EquipmentModifyDialog';
 
 const styles = {
   title: {
@@ -24,6 +25,7 @@ class EquipmentPage extends React.Component {
   state = {
     search_info: {},
     open: false,
+    modifyOpen: false,
     scroll: 'paper',
     selectEquipNo: '',
   };
@@ -134,10 +136,10 @@ class EquipmentPage extends React.Component {
           'contents-type': 'application/json',
         },
       })
-      .then(json => {
+      .then(async json => {
         localStorage.setItem('access_token', json.data.data.access_token);
         console.log('json :: ', json);
-        this.props.setEquipmentInfo(json.data.data.equip_info);
+        await this.props.setEquipmentInfo(json.data.data.equip_info);
       })
       .catch(err => {
         console.log(err);
@@ -162,25 +164,35 @@ class EquipmentPage extends React.Component {
     });
   };
 
-  // 다이얼로그 오픈
+  // 장비 등록 다이얼로그 오픈
   handleClickOpen = (scroll, selectEquipNo) => () => {
     this.setState({ open: true, scroll, selectEquipNo });
-
-    // 선택한 장비가 있을 경우
-    if (selectEquipNo) {
-      // 장비 상세 정보 호출
-      this.getEquipInfo(selectEquipNo);
-    }
   };
 
-  // 다이얼로그 클로즈
+  // 장비 등록 다이얼로그 클로즈
   handleClose = () => {
     this.setState({ open: false, selectEquipNo: '' });
   };
 
-  render() {
-    const { classes, equip_list, list_load_status } = this.props;
+  // 장비 수정 다이얼로그 오픈
+  modifyDialogOpen = (scroll, selectEquipNo) => () => {
+    // 선택한 장비가 있을 경우
+    if (selectEquipNo) {
+      // 장비 상세 정보 호출
+      this.getEquipInfo(selectEquipNo).then(() => {
+        this.setState({ modifyOpen: true, scroll, selectEquipNo });
+      });
+    }
+  };
 
+  // 장비 수정 다이얼로그 클로즈
+  modifyDialogClose = () => {
+    this.setState({ modifyOpen: false, selectEquipNo: '' });
+  };
+
+  render() {
+    const { classes, equip_list, list_load_status, equip_info } = this.props;
+    // const { open } = this.state;
     return (
       <React.Fragment>
         <Typography className={classes.title}>장비 관리</Typography>
@@ -192,14 +204,23 @@ class EquipmentPage extends React.Component {
           equip_list={equip_list}
           fetchMoreData={this.fetchMoreData}
           list_load_status={list_load_status}
-          handleClickOpen={this.handleClickOpen}
+          handleClickOpen={this.modifyDialogOpen}
         />
-        <EquipmentFormDialog
+        <EquipmentRegisterDialog
           open={this.state.open}
           scroll={this.state.scroll}
           handleClose={this.handleClose}
-          selectEquipNo={this.state.selectEquipNo}
         />
+
+        {this.state.modifyOpen && (
+          <EquipmentModifyDialog
+            open={this.state.modifyOpen}
+            scroll={this.state.scroll}
+            handleClose={this.modifyDialogClose}
+            selectEquipNo={this.state.selectEquipNo}
+            equip_info={equip_info}
+          />
+        )}
       </React.Fragment>
     );
   }

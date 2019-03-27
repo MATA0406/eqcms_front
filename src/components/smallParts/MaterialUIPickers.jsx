@@ -5,7 +5,6 @@ import { DatePicker, MuiPickersUtilsProvider } from 'material-ui-pickers';
 // 데이트피커
 function MaterialUIPickers(props) {
   const { handleDateChange, buyDt } = props;
-  console.log(buyDt);
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
