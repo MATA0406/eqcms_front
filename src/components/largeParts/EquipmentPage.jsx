@@ -17,6 +17,7 @@ import {
 
 import EquipmentRegisterDialog from '../smallParts/EquipmentRegisterDialog';
 import EquipmentModifyDialog from '../smallParts/EquipmentModifyDialog';
+import ReasonsRequestDialog from '../smallParts/ReasonsRequestDialog';
 
 const styles = {
   title: {
@@ -29,6 +30,7 @@ class EquipmentPage extends React.Component {
     search_info: {},
     open: false,
     modifyOpen: false,
+    reasonOpen: false,
     scroll: 'paper',
     selectEquipNo: '',
   };
@@ -193,6 +195,16 @@ class EquipmentPage extends React.Component {
     this.setState({ modifyOpen: false, selectEquipNo: '' });
   };
 
+  // 장비 요청 사유 다이얼로그 오픈
+  handleReasonOpen = (scroll, selectEquipNo) => () => {
+    this.setState({ reasonOpen: true, scroll, selectEquipNo });
+  };
+
+  // 장비 요청 사유 다이얼로그 클로즈
+  handleReasonClose = () => {
+    this.setState({ reasonOpen: false });
+  };
+
   render() {
     const { classes, equip_list, list_load_status, equip_info } = this.props;
     // const { open } = this.state;
@@ -208,6 +220,7 @@ class EquipmentPage extends React.Component {
           fetchMoreData={this.fetchMoreData}
           list_load_status={list_load_status}
           handleClickOpen={this.modifyDialogOpen}
+          handleReasonOpen={this.handleReasonOpen}
         />
         <EquipmentRegisterDialog
           open={this.state.open}
@@ -223,6 +236,12 @@ class EquipmentPage extends React.Component {
             equip_info={equip_info}
           />
         )}
+        <ReasonsRequestDialog
+          open={this.state.reasonOpen}
+          scroll={this.state.scroll}
+          handleReasonClose={this.handleReasonClose}
+          selectEquipNo={this.state.selectEquipNo}
+        />
       </React.Fragment>
     );
   }

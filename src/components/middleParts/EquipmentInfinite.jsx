@@ -52,6 +52,7 @@ class EquipmentInfinite extends React.Component {
       list_load_status,
       open,
       scroll,
+      handleReasonOpen,
       handleClickOpen,
     } = this.props;
 
@@ -73,6 +74,7 @@ class EquipmentInfinite extends React.Component {
                     equip_info={equip_info}
                     key={index}
                     handleClickOpen={handleClickOpen}
+                    handleReasonOpen={handleReasonOpen}
                   />
                 ))
               : ''}

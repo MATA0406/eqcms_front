@@ -29,7 +29,13 @@ const styles = {
 };
 
 function CardComponent(props) {
-  const { classes, req_grp, equip_info, handleClickOpen } = props;
+  const {
+    classes,
+    req_grp,
+    equip_info,
+    handleClickOpen,
+    handleReasonOpen,
+  } = props;
 
   return (
     <Grid container item xs={12} sm={6} md={4} lg={3} xl={2}>
@@ -101,7 +107,7 @@ function CardComponent(props) {
                   className={classes.equiptitle}
                   variant="text"
                   size="large"
-                  onClick={handleClickOpen('paper', equip_info.equip_no)}
+                  onClick={handleClickOpen('body', equip_info.equip_no)}
                 >
                   {equip_info.equip_nm}
                 </Button>
@@ -123,7 +129,11 @@ function CardComponent(props) {
             justify="center"
             alignItems="flex-end"
           >
-            <ButtonComponent req_grp={req_grp} equip_info={equip_info} />
+            <ButtonComponent
+              req_grp={req_grp}
+              equip_info={equip_info}
+              handleReasonOpen={handleReasonOpen}
+            />
           </Grid>
         </Card>
       ) : (

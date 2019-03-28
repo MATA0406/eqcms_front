@@ -58,7 +58,7 @@ const styles = {
 };
 
 function ButtonComponent(props) {
-  const { classes, equip_info, req_grp } = props;
+  const { classes, equip_info, req_grp, handleReasonOpen } = props;
 
   let req_type;
   let btn_type;
@@ -186,6 +186,7 @@ function ButtonComponent(props) {
             size="large"
             disabled={btnDisabled}
             data-equip_no={equip_info.equip_no}
+            onClick={handleReasonOpen('paper', equip_info.equip_no)}
           >
             {btn_name}
           </Button>
