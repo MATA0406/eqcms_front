@@ -149,21 +149,7 @@ class EquipmentRegisterDialog extends React.Component {
 
     // 장비 이미지 업로드
     return this.imageUpload(this.state.file)
-      .then(async () => {
-        const date = new Date();
-        const fileName =
-          date.getFullYear() +
-          '_' +
-          (date.getMonth() + 1) +
-          '_' +
-          date.getDate() +
-          '_' +
-          date.getHours() +
-          '_' +
-          date.getMinutes() +
-          '_' +
-          date.getSeconds();
-
+      .then(async fileName => {
         const data = {
           equip_nm: this.state.equipNm,
           serial_no: this.state.serialNo,
@@ -265,7 +251,7 @@ class EquipmentRegisterDialog extends React.Component {
             reject(new Error('Request is failed'));
           } else {
             console.log('data :: ', data);
-            resolve(data);
+            resolve(fileName);
           }
         });
     });

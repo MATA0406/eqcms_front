@@ -11,6 +11,7 @@ import EquipmentCard from 'components/middleParts/EquipmentCard';
 
 import { getReqEquipment, getMyEquipment } from 'store/modules/home';
 import { setEquipmentInfo } from 'store/modules/equipment';
+import { setCommonCdList200 } from 'store/modules/common';
 
 import EquipmentModifyDialog from '../smallParts/EquipmentModifyDialog';
 
@@ -30,9 +31,56 @@ class HomePage extends React.Component {
     scroll: 'paper',
   };
 
-  componentDidMount() {
-    this.f_getReqEquipment();
-  }
+  componentDidMount = async () => {
+    await this.f_getReqEquipment();
+    // 공통 코드 목록 조회
+    await this.getcommonCdList('200');
+  };
+
+  // 공통 코드 목록 조회
+  getcommonCdList = async grp_cd => {
+    const params = {
+      access_token: localStorage.getItem('access_token'),
+      grp_cd_list: [grp_cd],
+    };
+
+    // 공통 코드 목록 조회API
+    await axios
+      .get(
+        'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/common/code/api-101-0001',
+        {
+          params: {
+            params: JSON.stringify(params),
+          },
+          headers: {
+            'contents-type': 'application/json',
+          },
+        },
+      )
+      .then(async json => {
+        localStorage.setItem('access_token', json.data.data.access_token);
+
+        if (grp_cd === '200') {
+          await this.props.setCommonCdList200(json.data.data.cd_list);
+        } else if (grp_cd === '201') {
+          await this.props.setCommonCdList201(json.data.data.cd_list);
+        }
+      })
+      .catch(err => {
+        console.log(err.response.data);
+
+        // Token error List
+        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+        if (errCodes.indexOf(err.response.data.code) !== -1) {
+          alert(err.response.data.message);
+          // this.props.history.push('/login');
+          window.location.href = '/login';
+        } else {
+          alert(err.response.data.message);
+        }
+      });
+  };
 
   // 요청 장비 목록 조회
   f_getReqEquipment = async () => {
@@ -228,6 +276,7 @@ const mapActionToProps = dispatch => {
     getReqEquipment: req_equip_list =>
       dispatch(getReqEquipment(req_equip_list)),
     getMyEquipment: my_equip_list => dispatch(getMyEquipment(my_equip_list)),
+    setCommonCdList200: response => dispatch(setCommonCdList200(response)),
     setEquipmentInfo: equip_info => dispatch(setEquipmentInfo(equip_info)),
   };
 };

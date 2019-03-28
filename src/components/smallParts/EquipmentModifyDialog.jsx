@@ -78,11 +78,8 @@ class EquipmentModifyDialog extends React.Component {
     statCd: '',
     userId: '',
     userNm: '',
-    reqUserId: '',
     reqUserNm: '',
-    reqCd: '',
     reqCdNm: '',
-    reqRsn: '',
     buyDt: new Date().toISOString().split('T')[0],
     imgUrl: '',
   };
@@ -109,11 +106,8 @@ class EquipmentModifyDialog extends React.Component {
         statCd: this.props.equip_info.stat_cd,
         userId: this.props.equip_info.user_id,
         userNm: this.props.equip_info.user_nm,
-        reqUserId: this.props.equip_info.req_user_id,
         reqUserNm: this.props.equip_info.req_user_nm,
-        reqCd: this.props.equip_info.req_cd,
         reqCdNm: this.props.equip_info.req_cd_nm,
-        reqRsn: this.props.equip_info.req_rsn,
       });
     }
   }
@@ -218,21 +212,7 @@ class EquipmentModifyDialog extends React.Component {
     if (this.state.file !== '') {
       // 장비 이미지 업로드
       this.imageUpload(this.state.file)
-        .then(async () => {
-          const date = new Date();
-          const fileName =
-            date.getFullYear() +
-            '_' +
-            (date.getMonth() + 1) +
-            '_' +
-            date.getDate() +
-            '_' +
-            date.getHours() +
-            '_' +
-            date.getMinutes() +
-            '_' +
-            date.getSeconds();
-
+        .then(async fileName => {
           const data = {
             equip_no: this.state.equipNo,
             equip_nm: this.state.equipNm,
@@ -374,7 +354,7 @@ class EquipmentModifyDialog extends React.Component {
             console.log('err :: ', err);
             reject(new Error('Request is failed'));
           } else {
-            resolve(data);
+            resolve(fileName);
           }
         });
     });
