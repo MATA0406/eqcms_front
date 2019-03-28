@@ -150,12 +150,26 @@ class EquipmentRegisterDialog extends React.Component {
     // 장비 이미지 업로드
     return this.imageUpload(this.state.file)
       .then(async () => {
+        const date = new Date();
+        const fileName =
+          date.getFullYear() +
+          '_' +
+          (date.getMonth() + 1) +
+          '_' +
+          date.getDate() +
+          '_' +
+          date.getHours() +
+          '_' +
+          date.getMinutes() +
+          '_' +
+          date.getSeconds();
+
         const data = {
           equip_nm: this.state.equipNm,
           serial_no: this.state.serialNo,
           equip_tp_cd: this.state.equipTpCd,
           buy_dt: this.state.buyDt,
-          img_url: `/upload/${this.state.imgUrl}`,
+          img_url: `/upload/${fileName}`,
         };
 
         // 장비 등록 API
@@ -208,6 +222,19 @@ class EquipmentRegisterDialog extends React.Component {
   // 이미지 업로드(S3)
   imageUpload = async _file => {
     const file = _file;
+    const date = new Date();
+    const fileName =
+      date.getFullYear() +
+      '_' +
+      (date.getMonth() + 1) +
+      '_' +
+      date.getDate() +
+      '_' +
+      date.getHours() +
+      '_' +
+      date.getMinutes() +
+      '_' +
+      date.getSeconds();
 
     // 아마존 S3에 저장하려면 먼저 설정을 업데이트합니다.
     AWS.config.region = 'ap-northeast-2'; // Seoul
@@ -218,7 +245,7 @@ class EquipmentRegisterDialog extends React.Component {
 
     const s3_params = {
       Bucket: 'penta-equip-upload',
-      Key: `upload/${file.name}`,
+      Key: `upload/${fileName}`,
       ACL: 'public-read',
       ContentType: file.type,
       Body: file,
@@ -436,22 +463,7 @@ class EquipmentRegisterDialog extends React.Component {
                 container
                 item
                 xs={12}
-                md={2}
-                direction="row"
-                justify="flex-start"
-                alignItems="center"
-                zeroMinWidth
-                className={classes.dateArea}
-              >
-                <Typography component="span" variant="h6">
-                  구입일자:
-                </Typography>
-              </Grid>
-              <Grid
-                container
-                item
-                xs={12}
-                md={9}
+                md={12}
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
@@ -476,8 +488,8 @@ class EquipmentRegisterDialog extends React.Component {
                 <Grid
                   container
                   item
-                  xs={4}
-                  md={4}
+                  xs={5}
+                  md={5}
                   direction="row"
                   justify="flex-start"
                   alignItems="center"
@@ -496,8 +508,8 @@ class EquipmentRegisterDialog extends React.Component {
                 <Grid
                   container
                   item
-                  xs={4}
-                  md={4}
+                  xs={5}
+                  md={5}
                   direction="row"
                   justify="flex-start"
                   alignItems="center"

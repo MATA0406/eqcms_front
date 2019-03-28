@@ -47,7 +47,8 @@
       "react/destructuring-assignment": 0,
       "no-alert": 0,
       "no-console": 0,
-      "no-underscore-dangle": 0
+      "no-underscore-dangle": 0,
+      "prefer-template": 0
     },
     "env": {
       "browser": true

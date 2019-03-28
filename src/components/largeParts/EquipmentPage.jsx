@@ -9,8 +9,11 @@ import Typography from '@material-ui/core/Typography';
 import EquipmentInfinite from 'components/middleParts/EquipmentInfinite';
 import EquipmentForm from 'components/middleParts/EquipmentForm';
 
-import { setEquipmentList, addEquipmentList } from 'store/modules/equipment';
-import { setEquipmentInfo } from 'store/modules/equipment';
+import {
+  setEquipmentList,
+  addEquipmentList,
+  setEquipmentInfo,
+} from 'store/modules/equipment';
 
 import EquipmentRegisterDialog from '../smallParts/EquipmentRegisterDialog';
 import EquipmentModifyDialog from '../smallParts/EquipmentModifyDialog';
@@ -217,7 +220,6 @@ class EquipmentPage extends React.Component {
             open={this.state.modifyOpen}
             scroll={this.state.scroll}
             handleClose={this.modifyDialogClose}
-            selectEquipNo={this.state.selectEquipNo}
             equip_info={equip_info}
           />
         )}

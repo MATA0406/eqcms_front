@@ -92,43 +92,31 @@ class EquipmentModifyDialog extends React.Component {
     this.getEquipTpCdList();
     // 직원 목록 조회
     this.getEmpList();
-    console.log('2222222');
-    console.log('this.props.equip_info :: ', this.props.equip_info);
 
-    this.setState({
-      equipNo: this.props.equip_info.equip_no,
-      equipNm: this.props.equip_info.equip_nm,
-      equipTpCd: this.props.equip_info.equip_tp_cd,
-      buyDt: this.props.equip_info.buy_dt,
-      statCd: this.props.equip_info.stat_cd,
-      userId: this.props.equip_info.user_id,
-      userNm: this.props.equip_info.user_nm,
-      reqUserId: this.props.equip_info.req_user_id,
-      reqUserNm: this.props.equip_info.req_user_nm,
-      reqCd: this.props.equip_info.req_cd,
-      reqCdNm: this.props.equip_info.req_cd_nm,
-      reqRsn: this.props.equip_info.req_rsn,
-    });
+    if (this.props.equip_info) {
+      this.setState({
+        imagePreviewUrl: this.props.equip_info.img_url
+          ? `http://d3rg13r6ps3p6u.cloudfront.net${
+              this.props.equip_info.img_url
+            }`
+          : '',
+        imgUrl: this.props.equip_info.img_url,
+        equipNo: this.props.equip_info.equip_no,
+        serialNo: this.props.equip_info.serial_no,
+        equipNm: this.props.equip_info.equip_nm,
+        equipTpCd: this.props.equip_info.equip_tp_cd,
+        buyDt: this.props.equip_info.buy_dt,
+        statCd: this.props.equip_info.stat_cd,
+        userId: this.props.equip_info.user_id,
+        userNm: this.props.equip_info.user_nm,
+        reqUserId: this.props.equip_info.req_user_id,
+        reqUserNm: this.props.equip_info.req_user_nm,
+        reqCd: this.props.equip_info.req_cd,
+        reqCdNm: this.props.equip_info.req_cd_nm,
+        reqRsn: this.props.equip_info.req_rsn,
+      });
+    }
   }
-
-  // componentDidUpdate() {
-  //   console.log('33333333');
-  //   console.log('this.props.equip_info :: ', this.props.equip_info);
-  //   this.setState({
-  //     equipNo: this.props.equip_info.equip_no,
-  //     equipNm: this.props.equip_info.equipNm,
-  //     equipTpCd: this.props.equip_info.equip_tp_cd,
-  //     buyDt: this.props.equip_info.buy_dt,
-  //     statCd: this.props.equip_info.stat_cd,
-  //     userId: this.props.equip_info.user_id,
-  //     userNm: this.props.equip_info.user_nm,
-  //     reqUserId: this.props.equip_info.req_user_id,
-  //     reqUserNm: this.props.equip_info.req_user_nm,
-  //     reqCd: this.props.equip_info.req_cd,
-  //     reqCdNm: this.props.equip_info.req_cd_nm,
-  //     reqRsn: this.props.equip_info.req_rsn,
-  //   });
-  // }
 
   // 장비 구분 코드 목록 조회
   getEquipTpCdList = async () => {
@@ -154,8 +142,6 @@ class EquipmentModifyDialog extends React.Component {
         this.props.getEquipTpCdList(json.data.data.equip_tp_cd_list);
       })
       .catch(err => {
-        console.log(err.response.data);
-
         // Token error List
         const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
 
@@ -190,8 +176,6 @@ class EquipmentModifyDialog extends React.Component {
         this.props.setEmployeeList(json.data.data.emp_list);
       })
       .catch(err => {
-        console.log(err.response.data);
-
         // Token error List
         const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
 
@@ -206,12 +190,194 @@ class EquipmentModifyDialog extends React.Component {
   };
 
   // 장비 수정
-  equipmentRegister = e => {
+  equipmentModify = async e => {
     e.preventDefault();
-    console.log('equip_nm :: ', this.state.equipNm);
-    console.log('equipTpCd :: ', this.state.equipTpCd);
-    console.log('buy_dt ::', this.state.buyDt);
-    console.log('img_url :: ', this.state.imgUrl);
+
+    if (this.state.file === '' && this.state.imgUrl === '') {
+      alert('파일을 선택해주세요.');
+      return false;
+    }
+    if (this.state.equipNm === '') {
+      alert('모델명을 입력해주세요.');
+      return false;
+    }
+    if (this.state.equipTpCd === '') {
+      alert('장비구분을 선택해주세요.');
+      return false;
+    }
+    if (this.state.serialNo === '') {
+      alert('시리얼번호를 입력해주세요.');
+      return false;
+    }
+    if (this.state.statCd === '') {
+      alert('장비 상태를 선택해주세요.');
+      return false;
+    }
+
+    // 이미지가 변경되지 없으면
+    if (this.state.file !== '') {
+      // 장비 이미지 업로드
+      this.imageUpload(this.state.file)
+        .then(async () => {
+          const date = new Date();
+          const fileName =
+            date.getFullYear() +
+            '_' +
+            (date.getMonth() + 1) +
+            '_' +
+            date.getDate() +
+            '_' +
+            date.getHours() +
+            '_' +
+            date.getMinutes() +
+            '_' +
+            date.getSeconds();
+
+          const data = {
+            equip_no: this.state.equipNo,
+            equip_nm: this.state.equipNm,
+            serial_no: this.state.serialNo,
+            equip_tp_cd: this.state.equipTpCd,
+            stat_cd: this.state.statCd,
+            img_url: `/upload/${fileName}`,
+          };
+
+          // 장비 수정 API
+          await axios
+            .post(
+              'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/equip/api-300-0004',
+              data,
+              {
+                headers: {
+                  access_token: localStorage.getItem('access_token'),
+                },
+              },
+            )
+            .then(() => {
+              alert('수정이 완료되었습니다.');
+              this.props.parentsComponent === 'home'
+                ? (window.location.href = '/')
+                : (window.location.href = '/equipment');
+            })
+            .catch(err => {
+              console.error(err);
+
+              // Token error List
+              const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+              if (errCodes.indexOf(err.response.data.code) !== -1) {
+                alert(err.response.data.message);
+                // this.props.history.push('/login');
+                window.location.href = '/login';
+              } else {
+                alert(err.response.data.message);
+              }
+            });
+        })
+        .catch(err => {
+          console.error(err);
+
+          // Token error List
+          const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+          if (errCodes.indexOf(err.response.data.code) !== -1) {
+            alert(err.response.data.message);
+            // this.props.history.push('/login');
+            window.location.href = '/login';
+          } else {
+            alert(err.response.data.message);
+          }
+        });
+    } else {
+      const data = {
+        equip_no: this.state.equipNo,
+        equip_nm: this.state.equipNm,
+        serial_no: this.state.serialNo,
+        equip_tp_cd: this.state.equipTpCd,
+        stat_cd: this.state.statCd,
+        img_url: this.state.imgUrl,
+      };
+      console.log('this.state.imgUrl :: ', this.state.imgUrl);
+
+      // 장비 등록 API
+      await axios
+        .post(
+          'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/equip/api-300-0004',
+          data,
+          {
+            headers: {
+              access_token: localStorage.getItem('access_token'),
+            },
+          },
+        )
+        .then(() => {
+          alert('수정이 완료되었습니다.');
+          window.location.href = '/equipment';
+        })
+        .catch(err => {
+          console.error(err);
+
+          // Token error List
+          const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+          if (errCodes.indexOf(err.response.data.code) !== -1) {
+            alert(err.response.data.message);
+            // this.props.history.push('/login');
+            window.location.href = '/login';
+          } else {
+            alert(err.response.data.message);
+          }
+        });
+    }
+  };
+
+  // 이미지 업로드(S3)
+  imageUpload = async _file => {
+    const file = _file;
+    const date = new Date();
+    const fileName =
+      date.getFullYear() +
+      '_' +
+      (date.getMonth() + 1) +
+      '_' +
+      date.getDate() +
+      '_' +
+      date.getHours() +
+      '_' +
+      date.getMinutes() +
+      '_' +
+      date.getSeconds();
+
+    // 아마존 S3에 저장하려면 먼저 설정을 업데이트합니다.
+    AWS.config.region = 'ap-northeast-2'; // Seoul
+    AWS.config.update({
+      accessKeyId: 'AKIAI7QANZMSNH5MWUBA',
+      secretAccessKey: '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',
+    });
+
+    const s3_params = {
+      Bucket: 'penta-equip-upload',
+      Key: `upload/${fileName}`,
+      ACL: 'public-read',
+      ContentType: file.type,
+      Body: file,
+    };
+
+    const s3obj = new AWS.S3({ params: s3_params });
+
+    return new Promise((resolve, reject) => {
+      s3obj
+        .upload()
+        .on('httpUploadProgress', evt => {})
+        .send((err, data) => {
+          if (err) {
+            console.log('err :: ', err);
+            reject(new Error('Request is failed'));
+          } else {
+            resolve(data);
+          }
+        });
+    });
   };
 
   // 장비명
@@ -228,6 +394,14 @@ class EquipmentModifyDialog extends React.Component {
     e.preventDefault();
     this.setState({
       equipTpCd: e.target.value,
+    });
+  };
+
+  // 시리얼
+  _handleSerialNoChange = e => {
+    e.preventDefault();
+    this.setState({
+      serialNo: e.target.value,
     });
   };
 
@@ -253,10 +427,8 @@ class EquipmentModifyDialog extends React.Component {
   _handleImageChange = e => {
     e.preventDefault();
 
-    console.log(e.target.value);
     const reader = new FileReader();
     const file = e.target.files[0];
-    console.log(file.name);
 
     reader.onloadend = () => {
       this.setState({
@@ -271,7 +443,6 @@ class EquipmentModifyDialog extends React.Component {
 
   // 데이트피커 value 변환 => setState()
   handleDateChange = date => {
-    console.log('dateISO :: ', date.toISOString().split('T')[0]);
     this.setState({ buyDt: date.toISOString().split('T')[0] });
   };
 
@@ -289,10 +460,18 @@ class EquipmentModifyDialog extends React.Component {
     // 장비 이미지 미리보기
     const { imagePreviewUrl } = this.state;
     let $imagePreview = null;
+    let equipStatus = false;
+
     if (imagePreviewUrl) {
       $imagePreview = imagePreviewUrl;
     } else {
       $imagePreview = `${process.env.PUBLIC_URL}/images/noImage.gif`;
+    }
+
+    if (this.props.equip_info.user_id === localStorage.getItem('login_id')) {
+      equipStatus = false;
+    } else {
+      equipStatus = true;
     }
 
     return (
@@ -307,7 +486,7 @@ class EquipmentModifyDialog extends React.Component {
         >
           <Divider />
           <DialogContent>
-            <form className={classes.root} onSubmit={this.equipmentRegister}>
+            <form className={classes.root} onSubmit={this.equipmentModify}>
               <Grid container justify="center" alignItems="center">
                 <Avatar
                   alt="Image"
@@ -407,11 +586,31 @@ class EquipmentModifyDialog extends React.Component {
                 zeroMinWidth
               >
                 <TextField
+                  label="시리얼번호"
+                  className={classes.textField}
+                  margin="normal"
+                  variant="outlined"
+                  onChange={this._handleSerialNoChange}
+                  value={this.state.serialNo}
+                />
+              </Grid>
+              <Grid
+                container
+                item
+                xs={12}
+                md={12}
+                direction="row"
+                justify="flex-start"
+                alignItems="center"
+                zeroMinWidth
+              >
+                <TextField
                   select
                   label="사용자"
                   className={classes.textField}
                   value={this.state.userId}
                   onChange={this._handleUser}
+                  disabled={true}
                   SelectProps={{
                     MenuProps: {
                       className: classes.menu,
@@ -431,22 +630,7 @@ class EquipmentModifyDialog extends React.Component {
                 container
                 item
                 xs={12}
-                md={3}
-                direction="row"
-                justify="flex-start"
-                alignItems="center"
-                zeroMinWidth
-                className={classes.dateArea}
-              >
-                <Typography component="span" variant="h6">
-                  구입 일자:
-                </Typography>
-              </Grid>
-              <Grid
-                container
-                item
-                xs={12}
-                md={8}
+                md={12}
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
@@ -456,6 +640,7 @@ class EquipmentModifyDialog extends React.Component {
                 <MaterialUIPickers
                   buyDt={this.state.buyDt}
                   handleDateChange={this.handleDateChange}
+                  dateDisabled={true}
                 />
               </Grid>
               <Grid
@@ -479,6 +664,7 @@ class EquipmentModifyDialog extends React.Component {
                       className: classes.menu,
                     },
                   }}
+                  disabled={equipStatus}
                   margin="normal"
                   variant="outlined"
                 >
@@ -516,7 +702,10 @@ class EquipmentModifyDialog extends React.Component {
                 className={classes.dateArea}
               >
                 <Typography component="span" variant="h6">
-                  {this.state.reqCdNm}
+                  {this.props.equip_info.user_id ===
+                  localStorage.getItem('login_id')
+                    ? '내 장비'
+                    : this.state.reqCdNm}
                 </Typography>
               </Grid>
               <Grid
@@ -531,7 +720,9 @@ class EquipmentModifyDialog extends React.Component {
                 className={classes.dateArea}
               >
                 <Typography component="span" variant="h6">
-                  {`${this.state.reqUserNm} -> ${this.state.userNm}`}
+                  {this.props.equip_info.req_user_nm
+                    ? `${this.state.reqUserNm} -> ${this.state.userNm}`
+                    : this.state.userNm}
                 </Typography>
               </Grid>
               <Grid
@@ -547,8 +738,8 @@ class EquipmentModifyDialog extends React.Component {
                 <Grid
                   container
                   item
-                  xs={4}
-                  md={4}
+                  xs={5}
+                  md={5}
                   direction="row"
                   justify="flex-start"
                   alignItems="center"
@@ -567,8 +758,8 @@ class EquipmentModifyDialog extends React.Component {
                 <Grid
                   container
                   item
-                  xs={4}
-                  md={4}
+                  xs={5}
+                  md={5}
                   direction="row"
                   justify="flex-start"
                   alignItems="center"

@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import EquipmentCard from 'components/middleParts/EquipmentCard';
 
 import { getReqEquipment, getMyEquipment } from 'store/modules/home';
+import { setEquipmentInfo } from 'store/modules/equipment';
+
 import EquipmentModifyDialog from '../smallParts/EquipmentModifyDialog';
 
 const styles = {
@@ -112,18 +114,61 @@ class HomePage extends React.Component {
       });
   };
 
+  // 장비 상세 조회
+  getEquipInfo = async equip_no => {
+    const params = {
+      access_token: localStorage.getItem('access_token'),
+      equip_no,
+    };
+
+    // 요청 대상 장비 목록 조회(검색)API
+    await axios
+      .get('http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/equip/api-300-0002', {
+        params: {
+          params: JSON.stringify(params),
+        },
+        headers: {
+          'contents-type': 'application/json',
+        },
+      })
+      .then(async json => {
+        localStorage.setItem('access_token', json.data.data.access_token);
+        console.log('json :: ', json);
+        await this.props.setEquipmentInfo(json.data.data.equip_info);
+      })
+      .catch(err => {
+        console.log(err);
+
+        // Token error List
+        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+        if (errCodes.indexOf(err.response.data.code) !== -1) {
+          alert(err.response.data.message);
+          window.location.href = '/login';
+        } else {
+          alert(err.response.data.message);
+        }
+      });
+  };
+
   // 다이얼로그 오픈
-  handleClickOpen = scroll => () => {
-    this.setState({ open: true, scroll });
+  handleClickOpen = (scroll, selectEquipNo) => () => {
+    console.log('selectEquipNo :: ', selectEquipNo);
+    if (selectEquipNo) {
+      // 장비 상세 정보 호출
+      this.getEquipInfo(selectEquipNo).then(() => {
+        this.setState({ open: true, scroll, selectEquipNo });
+      });
+    }
   };
 
   // 다이얼로그 클로즈
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({ open: false, selectEquipNo: '' });
   };
 
   render() {
-    const { classes, req_equip_list, my_equip_list } = this.props;
+    const { classes, req_equip_list, my_equip_list, equip_info } = this.props;
 
     return (
       <React.Fragment>
@@ -154,11 +199,15 @@ class HomePage extends React.Component {
         ) : (
           ''
         )}
-        <EquipmentModifyDialog
-          open={this.state.open}
-          scroll={this.state.scroll}
-          handleClose={this.handleClose}
-        />
+        {this.state.open && (
+          <EquipmentModifyDialog
+            open={this.state.open}
+            scroll={this.state.scroll}
+            handleClose={this.handleClose}
+            equip_info={equip_info}
+            parentsComponent="home"
+          />
+        )}
       </React.Fragment>
     );
   }
@@ -169,6 +218,7 @@ const mapStateToProps = state => {
   return {
     req_equip_list: state.home.req_equip_list,
     my_equip_list: state.home.my_equip_list,
+    equip_info: state.equipment.equip_info,
   };
 };
 
@@ -178,6 +228,7 @@ const mapActionToProps = dispatch => {
     getReqEquipment: req_equip_list =>
       dispatch(getReqEquipment(req_equip_list)),
     getMyEquipment: my_equip_list => dispatch(getMyEquipment(my_equip_list)),
+    setEquipmentInfo: equip_info => dispatch(setEquipmentInfo(equip_info)),
   };
 };
 
