@@ -70,7 +70,7 @@ class ReasonsRequestDialog extends React.Component {
   };
 
   render() {
-    const { classes, open, handleReasonClose, selectEquipNo } = this.props;
+    const { classes, open, handleReasonClose } = this.props;
 
     return (
       <div>
