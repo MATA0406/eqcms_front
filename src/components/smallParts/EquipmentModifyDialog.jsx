@@ -292,7 +292,9 @@ class EquipmentModifyDialog extends React.Component {
         )
         .then(() => {
           alert('수정이 완료되었습니다.');
-          window.location.href = '/equipment';
+          this.props.parentsComponent === 'home'
+            ? (window.location.href = '/')
+            : (window.location.href = '/equipment');
         })
         .catch(err => {
           console.error(err);
