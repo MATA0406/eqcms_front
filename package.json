@@ -21,7 +21,8 @@
     "react-infinite-scroll-component": "^4.5.1",
     "react-redux": "^6.0.1",
     "react-scripts": "2.1.5",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "blueimp-load-image": "^2.20.1"
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src react-scripts start",

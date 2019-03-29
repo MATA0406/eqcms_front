@@ -4,28 +4,26 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import AWS from 'aws-sdk';
 
-// Dialog
+// Material-UI
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-
-// SelectBox
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-
-// Text
 import MenuItem from '@material-ui/core/MenuItem';
-
 import Grid from '@material-ui/core/Grid';
 import blue from '@material-ui/core/colors/blue';
 
+// Modules
 import { getEquipTpCdList } from 'store/modules/home';
 import { setEmployeeList } from 'store/modules/employee';
 
 import MaterialUIPickers from 'components/smallParts/MaterialUIPickers';
+
+import * as loadImage from 'blueimp-load-image';
 
 const styles = () => ({
   root: {
@@ -208,6 +206,7 @@ class EquipmentRegisterDialog extends React.Component {
   // 이미지 업로드(S3)
   imageUpload = async _file => {
     const file = _file;
+    console.log('file :: ', file);
     const date = new Date();
     const fileName =
       date.getFullYear() +
@@ -291,18 +290,26 @@ class EquipmentRegisterDialog extends React.Component {
   _handleImageChange = e => {
     e.preventDefault();
 
-    console.log(e.target.value);
     const reader = new FileReader();
     const file = e.target.files[0];
-    console.log(file.name);
 
-    reader.onloadend = () => {
-      this.setState({
-        file,
-        imagePreviewUrl: reader.result,
-        imgUrl: file.name,
-      });
-    };
+    loadImage(
+      file,
+      canvas => {
+        canvas.toBlob(
+          blob => {
+            this.setState({
+              file: blob,
+              imagePreviewUrl: canvas.toDataURL(),
+              imgUrl: file.name,
+            });
+          },
+          'image/jpeg',
+          0.8,
+        );
+      },
+      { orientation: true, maxWidth: 1000 },
+    );
 
     reader.readAsDataURL(file);
   };
