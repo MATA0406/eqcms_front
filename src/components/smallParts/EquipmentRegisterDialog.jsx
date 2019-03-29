@@ -206,8 +206,10 @@ class EquipmentRegisterDialog extends React.Component {
   // 이미지 업로드(S3)
   imageUpload = async _file => {
     const file = _file;
-    console.log('file :: ', file);
     const date = new Date();
+    var min = 1;
+    var max = 100000;
+    var random = Math.floor(Math.random() * (+max - +min)) + +min;
     const fileName =
       date.getFullYear() +
       '_' +
@@ -219,7 +221,9 @@ class EquipmentRegisterDialog extends React.Component {
       '_' +
       date.getMinutes() +
       '_' +
-      date.getSeconds();
+      date.getSeconds() +
+      '_' +
+      random;
 
     // 아마존 S3에 저장하려면 먼저 설정을 업데이트합니다.
     AWS.config.region = 'ap-northeast-2'; // Seoul

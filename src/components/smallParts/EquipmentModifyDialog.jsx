@@ -27,6 +27,8 @@ import { setEmployeeList } from 'store/modules/employee';
 
 import MaterialUIPickers from 'components/smallParts/MaterialUIPickers';
 
+import * as loadImage from 'blueimp-load-image';
+
 const styles = () => ({
   root: {
     display: 'flex',
@@ -317,6 +319,9 @@ class EquipmentModifyDialog extends React.Component {
   imageUpload = async _file => {
     const file = _file;
     const date = new Date();
+    const min = 1;
+    const max = 100000;
+    const random = Math.floor(Math.random() * (+max - +min)) + +min;
     const fileName =
       date.getFullYear() +
       '_' +
@@ -328,7 +333,9 @@ class EquipmentModifyDialog extends React.Component {
       '_' +
       date.getMinutes() +
       '_' +
-      date.getSeconds();
+      date.getSeconds() +
+      '_' +
+      random;
 
     // 아마존 S3에 저장하려면 먼저 설정을 업데이트합니다.
     AWS.config.region = 'ap-northeast-2'; // Seoul
@@ -412,13 +419,23 @@ class EquipmentModifyDialog extends React.Component {
     const reader = new FileReader();
     const file = e.target.files[0];
 
-    reader.onloadend = () => {
-      this.setState({
-        file,
-        imagePreviewUrl: reader.result,
-        imgUrl: file.name,
-      });
-    };
+    loadImage(
+      file,
+      canvas => {
+        canvas.toBlob(
+          blob => {
+            this.setState({
+              file: blob,
+              imagePreviewUrl: canvas.toDataURL(),
+              imgUrl: file.name,
+            });
+          },
+          'image/jpeg',
+          0.8,
+        );
+      },
+      { orientation: true, maxWidth: 1000 },
+    );
 
     reader.readAsDataURL(file);
   };
@@ -592,7 +609,7 @@ class EquipmentModifyDialog extends React.Component {
                   className={classes.textField}
                   value={this.state.userId}
                   onChange={this._handleUser}
-                  disabled={true}
+                  disabled
                   SelectProps={{
                     MenuProps: {
                       className: classes.menu,
@@ -622,7 +639,7 @@ class EquipmentModifyDialog extends React.Component {
                 <MaterialUIPickers
                   buyDt={this.state.buyDt}
                   handleDateChange={this.handleDateChange}
-                  dateDisabled={true}
+                  dateDisabled
                 />
               </Grid>
               <Grid

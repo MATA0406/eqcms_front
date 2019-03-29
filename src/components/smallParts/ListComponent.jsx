@@ -23,6 +23,10 @@ const styles = theme => ({
   testText: {
     fontSize: 16,
   },
+  equipNm: {
+    fontSize: 16,
+    marginTop: '27px',
+  },
   cardImg: {
     width: 50,
   },
@@ -101,26 +105,30 @@ class ListComponent extends React.Component {
   };
 
   render() {
-    const { classes, equip_info } = this.props;
+    const { classes, equip_info, emp_info } = this.props;
     return (
       <Fragment>
         <form onSubmit={this.reqEquipRegister}>
           <Grid container item alignItems="center" xs={12}>
-            <Grid
-              container
-              item
-              xs={6}
-              sm={2}
-              className={classes.root}
-              direction="row"
-              justify="center"
-              alignItems="center"
-              zeroMinWidth
-            >
-              <Typography className={classes.testText} color="default">
-                {equip_info.user_nm}
-              </Typography>
-            </Grid>
+            {equip_info.user_nm ? (
+              <Grid
+                container
+                item
+                xs={6}
+                sm={2}
+                className={classes.root}
+                direction="row"
+                justify="center"
+                alignItems="center"
+                zeroMinWidth
+              >
+                <Typography className={classes.testText} color="default">
+                  {equip_info.user_nm}
+                </Typography>
+              </Grid>
+            ) : (
+              ''
+            )}
             <Grid
               container
               item
@@ -141,28 +149,37 @@ class ListComponent extends React.Component {
               />
             </Grid>
             <Grid
+              wrap="nowrap"
               container
               item
               xs={6}
-              sm={2}
+              sm={equip_info.user_nm ? 2 : 3}
               className={classes.root}
               direction="column"
               justify="center"
               alignItems="center"
-              zeroMinWidth
             >
-              <Typography className={classes.testText} color="default">
-                {equip_info.equip_nm}
-              </Typography>
-              <Typography className={classes.testText} color="default">
-                {equip_info.req_cd_nm}
-              </Typography>
+              <Grid item xs zeroMinWidth>
+                <Typography
+                  noWrap
+                  title={equip_info.equip_nm}
+                  className={classes.equipNm}
+                  color="default"
+                >
+                  {equip_info.equip_nm}
+                </Typography>
+              </Grid>
+              <Grid item xs zeroMinWidth>
+                <Typography className={classes.testText} color="default">
+                  {equip_info.stat_cd_nm}
+                </Typography>
+              </Grid>
             </Grid>
             <Grid
               container
               item
-              xs={6}
-              sm={3}
+              xs={equip_info.user_nm ? 6 : 12}
+              sm={equip_info.user_nm ? 3 : 4}
               className={classes.root}
               direction="column"
               justify="center"
@@ -170,11 +187,13 @@ class ListComponent extends React.Component {
               zeroMinWidth
             >
               <Typography className={classes.testText} color="default">
-                {equip_info.stat_cd_nm}
+                {equip_info.req_cd_nm}
               </Typography>
               <Typography className={classes.testText} color="default">
                 {equip_info.req_user_nm !== ''
-                  ? `${equip_info.req_user_nm} -> ${equip_info.user_nm}`
+                  ? `${equip_info.req_user_nm} -> ${
+                      equip_info.user_nm ? equip_info.user_nm : emp_info.nm
+                    }`
                   : ''}
               </Typography>
             </Grid>

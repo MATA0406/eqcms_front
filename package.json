@@ -9,6 +9,7 @@
     "@material-ui/icons": "^3.0.2",
     "aws-sdk": "^2.429.0",
     "axios": "^0.18.0",
+    "blueimp-load-image": "^2.20.1",
     "cross-env": "^5.2.0",
     "date-fns": "2.0.0-alpha.21",
     "eslint-config-airbnb": "^17.1.0",
@@ -19,10 +20,10 @@
     "react-dom": "^16.8.3",
     "react-infinite-loader": "^1.0.3",
     "react-infinite-scroll-component": "^4.5.1",
+    "react-loading-overlay": "^1.0.1",
     "react-redux": "^6.0.1",
     "react-scripts": "2.1.5",
-    "redux": "^4.0.1",
-    "blueimp-load-image": "^2.20.1"
+    "redux": "^4.0.1"
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src react-scripts start",
