@@ -47,9 +47,9 @@ const styles = theme => ({
 
 class EquipmentForm extends React.Component {
   state = {
-    equipment: '',
-    equipmentStatus: '',
-    reqStatus: '',
+    equipment: 'all',
+    equipmentStatus: 'all',
+    reqStatus: 'all',
   };
 
   componentDidMount = async () => {
