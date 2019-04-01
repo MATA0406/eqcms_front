@@ -1,12 +1,17 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import orange from '@material-ui/core/colors/orange';
 import ReqEquipDialog from 'components/smallParts/ReqEquipDialog';
+
+import { getReqTargetEquipment } from 'store/modules/home';
 
 const styles = {
   root: {
@@ -38,6 +43,12 @@ class RequestCard extends React.Component {
 
   // 다이얼로그 클로즈
   handleClose = () => {
+    const data = {
+      page_info: {},
+      equip_list: [],
+    };
+
+    this.props.getReqTargetEquipment(data);
     this.setState({ open: false });
   };
 
@@ -84,4 +95,17 @@ RequestCard.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(RequestCard);
+// action을 dispatch하는 펑션을 로컬에 있는 props로 매핑
+const mapActionToProps = dispatch => {
+  return {
+    getReqTargetEquipment: response =>
+      dispatch(getReqTargetEquipment(response)),
+  };
+};
+
+export default withStyles(styles)(
+  connect(
+    null,
+    mapActionToProps,
+  )(withRouter(RequestCard)),
+);

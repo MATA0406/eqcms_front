@@ -341,12 +341,14 @@ class ReqEquipDialog extends React.Component {
                 </Grid>
               </Grid>
             </form>
-            <InfiniteComponent
-              equip_list={equip_list}
-              page_info={page_info}
-              list_load_status={list_load_status}
-              fetchMoreData={this.fetchMoreData}
-            />
+            {open && (
+              <InfiniteComponent
+                equip_list={equip_list}
+                page_info={page_info}
+                list_load_status={list_load_status}
+                fetchMoreData={this.fetchMoreData}
+              />
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">

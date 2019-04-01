@@ -207,9 +207,9 @@ class EquipmentRegisterDialog extends React.Component {
   imageUpload = async _file => {
     const file = _file;
     const date = new Date();
-    var min = 1;
-    var max = 100000;
-    var random = Math.floor(Math.random() * (+max - +min)) + +min;
+    const min = 1;
+    const max = 100000;
+    const random = Math.floor(Math.random() * (+max - +min)) + +min;
     const fileName =
       date.getFullYear() +
       '_' +

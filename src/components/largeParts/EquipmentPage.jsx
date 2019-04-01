@@ -222,11 +222,15 @@ class EquipmentPage extends React.Component {
           handleClickOpen={this.modifyDialogOpen}
           handleReasonOpen={this.handleReasonOpen}
         />
-        <EquipmentRegisterDialog
-          open={this.state.open}
-          scroll={this.state.scroll}
-          handleClose={this.handleClose}
-        />
+        {this.state.open ? (
+          <EquipmentRegisterDialog
+            open={this.state.open}
+            scroll={this.state.scroll}
+            handleClose={this.handleClose}
+          />
+        ) : (
+          ''
+        )}
 
         {this.state.modifyOpen && (
           <EquipmentModifyDialog
@@ -236,12 +240,16 @@ class EquipmentPage extends React.Component {
             equip_info={equip_info}
           />
         )}
-        <ReasonsRequestDialog
-          open={this.state.reasonOpen}
-          scroll={this.state.scroll}
-          handleReasonClose={this.handleReasonClose}
-          selectEquipNo={this.state.selectEquipNo}
-        />
+        {this.state.reasonOpen ? (
+          <ReasonsRequestDialog
+            open={this.state.reasonOpen}
+            scroll={this.state.scroll}
+            handleReasonClose={this.handleReasonClose}
+            selectEquipNo={this.state.selectEquipNo}
+          />
+        ) : (
+          ''
+        )}
       </React.Fragment>
     );
   }
