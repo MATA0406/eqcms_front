@@ -45,6 +45,13 @@ class EmployeeListPage extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false });
+
+    const data = {
+      emp_info: {},
+      emp_equip_list: [],
+    };
+
+    this.props.setEmployeeEquipList(data);
   };
 
   getEmpEquipInfo = async select_id => {
@@ -64,7 +71,6 @@ class EmployeeListPage extends React.Component {
         },
       })
       .then(json => {
-        console.log('info :: ', json);
         localStorage.setItem('access_token', json.data.data.access_token);
         this.props.setEmployeeEquipList(json.data.data);
       })
