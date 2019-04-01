@@ -215,13 +215,17 @@ class EquipmentPage extends React.Component {
           changeSearchInfo={this.changeSearchInfo}
           handleClickOpen={this.handleClickOpen}
         />
-        <EquipmentInfinite
-          equip_list={equip_list}
-          fetchMoreData={this.fetchMoreData}
-          list_load_status={list_load_status}
-          handleClickOpen={this.modifyDialogOpen}
-          handleReasonOpen={this.handleReasonOpen}
-        />
+        {equip_list ? (
+          <EquipmentInfinite
+            equip_list={equip_list}
+            fetchMoreData={this.fetchMoreData}
+            list_load_status={list_load_status}
+            handleClickOpen={this.modifyDialogOpen}
+            handleReasonOpen={this.handleReasonOpen}
+          />
+        ) : (
+          ''
+        )}
         {this.state.open ? (
           <EquipmentRegisterDialog
             open={this.state.open}

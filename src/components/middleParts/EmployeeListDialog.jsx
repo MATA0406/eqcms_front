@@ -39,8 +39,6 @@ const styles = {
 class EmployeeListDialog extends React.Component {
   render() {
     const { classes, open, handleClose, emp_info, emp_equip_list } = this.props;
-    console.log('emp_info :: ', emp_info);
-    console.log('emp_equip_list :: ', emp_equip_list);
     return (
       <div>
         <Dialog

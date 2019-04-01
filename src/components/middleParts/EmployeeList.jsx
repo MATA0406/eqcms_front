@@ -20,11 +20,6 @@ const styles = {
 class EmployeeList extends React.Component {
   componentDidMount() {
     this.getEmpList();
-    console.log('1');
-  }
-
-  componentDidUpdate() {
-    console.log('2');
   }
 
   // 장비 목록 조회(최초)
@@ -68,19 +63,29 @@ class EmployeeList extends React.Component {
 
     return (
       <Grid container spacing={24}>
-        {emp_list.map(emp => (
-          <Grid container item xs={12} sm={6} md={4} lg={3} xl={2} key={emp.id}>
-            <Button
-              className={classes.user}
-              variant="contained"
-              color="default"
-              size="large"
-              onClick={handleClickOpen(emp.id)}
+        {emp_list &&
+          emp_list.map(emp => (
+            <Grid
+              container
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              lg={3}
+              xl={2}
+              key={emp.id}
             >
-              {emp.nm}
-            </Button>
-          </Grid>
-        ))}
+              <Button
+                className={classes.user}
+                variant="contained"
+                color="default"
+                size="large"
+                onClick={handleClickOpen(emp.id)}
+              >
+                {emp.nm}
+              </Button>
+            </Grid>
+          ))}
       </Grid>
     );
   }
