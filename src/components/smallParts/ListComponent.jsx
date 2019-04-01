@@ -259,6 +259,8 @@ class ListComponent extends React.Component {
                   className={classes.textField}
                   margin="normal"
                   variant="outlined"
+                  required
+                  autoFocus
                 />
               </Grid>
               <Grid
