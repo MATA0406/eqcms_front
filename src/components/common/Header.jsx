@@ -119,7 +119,7 @@ class Header extends React.Component {
             noWrap
           >
             <Link href="/" color="inherit">
-              EQCMS
+              펜타웍스
             </Link>
           </Typography>
 
