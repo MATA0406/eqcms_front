@@ -1,7 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import axios from 'axios';
 
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -67,31 +66,8 @@ class Header extends React.Component {
   // 로그아웃
   logout = () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
-      // 로그아웃 API
-      axios
-        .post(
-          'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0003',
-          {},
-          {
-            headers: {
-              access_token: localStorage.getItem('access_token'),
-            },
-          },
-        )
-        .then(() => {
-          this.props.goLogout();
-        })
-        .catch(err => {
-          // Token error List
-          const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
-
-          if (errCodes.indexOf(err.response.data.code) !== -1) {
-            alert(err.response.data.message);
-            window.location.href = '/login';
-          } else {
-            alert(err.response.data.message);
-          }
-        });
+      // 로그아웃 Action
+      this.props.goLogout();
     }
   };
 

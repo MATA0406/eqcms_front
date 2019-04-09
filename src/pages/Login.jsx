@@ -3,8 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import axios from 'axios';
-
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
@@ -54,7 +52,7 @@ const styles = theme => ({
 });
 
 const getCookie = function(name) {
-  var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  const value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
   return value ? value[2] : null;
 };
 
@@ -66,7 +64,6 @@ class Login extends React.Component {
 
   componentDidMount() {
     localStorage.clear();
-    getCookie('login_id');
     if (getCookie('login_id') !== null && getCookie('login_id') !== '') {
       this.setState({
         checkStatus: true,
@@ -75,16 +72,9 @@ class Login extends React.Component {
     }
   }
 
-  setCookie = (name, value, exp) => {
-    const date = new Date();
-    date.setTime(date.getTime() + exp * 24 * 60 * 60 * 1000);
-    document.cookie = name + '=' + value + ';expires=' + date.toUTCString();
-  };
-
   // 로그인
   submit = event => {
     event.preventDefault();
-    console.log('event.target.check :: ', event.target.check);
     const check = event.target.check;
 
     const userInfo = {
@@ -92,42 +82,18 @@ class Login extends React.Component {
       login_pw: event.target.login_pw.value,
     };
 
-    // 로그인 API
-    axios
-      .post(
-        'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/login/api-100-0002',
-        userInfo,
-      )
-      .then(item => {
-        console.log('Login item :: ', item);
-        localStorage.setItem(
-          'access_token',
-          item.data.data.login_info.access_token,
-        );
-        localStorage.setItem('login_nm', item.data.data.login_info.login_nm);
-        localStorage.setItem('login_id', item.data.data.login_info.login_id);
-        console.log('event.target.check :: ', check);
-        if (check.checked) {
-          // name=Ethan, 7일 뒤 만료됨
-          this.setCookie('login_id', item.data.data.login_info.login_id, 7);
-        } else {
-          document.cookie = 'login_id=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        }
-
-        this.props.goLogin(item.data.data.login_info);
-        this.props.history.push('/');
-      })
-      .catch(err => {
-        alert(err);
-      });
+    // 로그인 Action
+    this.props.goLogin(userInfo, check);
   };
 
+  // 아이디 기억하기 체크박스
   checkboxHandle = e => {
     this.setState({
       checkStatus: e.target.checked,
     });
   };
 
+  // 아이디 핸들러
   handleChange = event => {
     this.setState({ login_id: event.target.value });
   };
@@ -167,15 +133,15 @@ class Login extends React.Component {
               />
             </FormControl>
             <FormControlLabel
-              control={
-                <Checkbox
+              control={(
+<Checkbox
                   name="check"
                   id="check"
                   checked={this.state.checkStatus}
                   onChange={this.checkboxHandle}
                   color="primary"
                 />
-              }
+)}
               label="Remember me"
             />
             <Button
@@ -201,7 +167,7 @@ Login.propTypes = {
 // action을 dispatch하는 펑션을 로컬에 있는 props로 매핑
 const mapActionToProps = dispatch => {
   return {
-    goLogin: userInfo => dispatch(goLogin(userInfo)),
+    goLogin: (userInfo, check) => dispatch(goLogin(userInfo, check)),
   };
 };
 
