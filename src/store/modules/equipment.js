@@ -1,10 +1,13 @@
 // ------------------------ 액션 타입 정의 ----------------------------
-const SET_EQUIPMENT = 'equipment/SET_EQUIPMENT';
-const ADD_EQUIPMENT = 'equipment/ADD_EQUIPMENT';
-const SET_EQUIPMENT_INFO = 'equipment/SET_EQUIPMENT_INFO';
-const SET_EQUIPMENT_TP_CD_LIST = 'equipment/SET_EQUIPMENT_TP_CD_LIST';
+
+export const SET_EQUIPMENT = 'equipment/SET_EQUIPMENT';
+export const ADD_EQUIPMENT = 'equipment/ADD_EQUIPMENT';
+export const SET_EQUIPMENT_INFO_ASYNC = 'equipment/SET_EQUIPMENT_INFO_ASYNC';
+export const SET_EQUIPMENT_INFO = 'equipment/SET_EQUIPMENT_INFO';
+export const SET_EQUIPMENT_TP_CD_LIST = 'equipment/SET_EQUIPMENT_TP_CD_LIST';
 
 // ---------------------- 액션 생성함수 정의 --------------------------
+
 // 장비 목록 구분 코드 입력
 export const setEquipmentTpCdList = equip_tp_cd_list => ({
   type: SET_EQUIPMENT_TP_CD_LIST,
@@ -22,6 +25,12 @@ export const setEquipmentList = response => ({
 export const setEquipmentInfo = equip_info => ({
   type: SET_EQUIPMENT_INFO,
   equip_info,
+});
+
+// 장비 상세 정보 입력 액션
+export const setEquipmentInfoAsync = equip_no => ({
+  type: SET_EQUIPMENT_INFO_ASYNC,
+  equip_no,
 });
 
 // 장비 목록 입력(스크롤)

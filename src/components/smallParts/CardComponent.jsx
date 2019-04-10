@@ -107,7 +107,7 @@ function CardComponent(props) {
                   className={classes.equiptitle}
                   variant="text"
                   size="large"
-                  onClick={handleClickOpen('paper', equip_info.equip_no)}
+                  onClick={handleClickOpen(equip_info.equip_no)}
                 >
                   {equip_info.equip_nm}
                 </Button>

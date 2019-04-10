@@ -233,7 +233,6 @@ class ReqEquipDialog extends React.Component {
   render() {
     const {
       open,
-      scroll,
       handleClose,
       classes,
       equip_tp_cd_list,
@@ -249,7 +248,7 @@ class ReqEquipDialog extends React.Component {
           fullWidth
           open={open}
           onClose={handleClose}
-          scroll={scroll}
+          scroll="paper"
           disableBackdropClick
           aria-labelledby="scroll-dialog-title"
         >

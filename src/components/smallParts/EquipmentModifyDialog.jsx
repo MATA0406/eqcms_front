@@ -249,7 +249,6 @@ class EquipmentModifyDialog extends React.Component {
 
               if (errCodes.indexOf(err.response.data.code) !== -1) {
                 alert(err.response.data.message);
-                // this.props.history.push('/login');
                 window.location.href = '/login';
               } else {
                 alert(err.response.data.message);
@@ -264,7 +263,6 @@ class EquipmentModifyDialog extends React.Component {
 
           if (errCodes.indexOf(err.response.data.code) !== -1) {
             alert(err.response.data.message);
-            // this.props.history.push('/login');
             window.location.href = '/login';
           } else {
             alert(err.response.data.message);
@@ -448,7 +446,6 @@ class EquipmentModifyDialog extends React.Component {
   render() {
     const {
       open,
-      scroll,
       handleClose,
       classes,
       equip_tp_cd_list,
@@ -480,7 +477,7 @@ class EquipmentModifyDialog extends React.Component {
           fullWidth
           open={open}
           onClose={handleClose}
-          scroll={scroll}
+          scroll="paper"
           disableBackdropClick
         >
           <Divider />

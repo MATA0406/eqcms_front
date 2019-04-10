@@ -1,15 +1,27 @@
 // ------------------------ 액션 타입 정의 ----------------------------
+export const GET_REQ_EQUIPMENT_ASYNC = 'GET_REQ_EQUIPMENT_ASYNC';
 const GET_REQ_EQUIPMENT = 'home/GET_REQ_EQUIPMENT';
+export const GET_MY_EQUIPMENT_ASYNC = 'GET_MY_EQUIPMENT_ASYNC';
 const GET_MY_EQUIPMENT = 'home/GET_MY_EQUIPMENT';
 const GET_REQ_TARGET_EQUIPMENT = 'home/GET_REQ_TARGET_EQUIPMENT';
 const ADD_REQ_TARGET_EQUIPMENT = 'home/ADD_REQ_TARGET_EQUIPMENT';
 const GET_EQUIP_TP_CD_LIST = 'home/GET_EQUIP_TP_CD_LIST';
 
 // ---------------------- 액션 생성함수 정의 --------------------------
+// 요청 장비 목록
+export const getReqEquipmentAsync = () => ({
+  type: GET_REQ_EQUIPMENT_ASYNC,
+});
+
 // 요청 장비 목록 조회
 export const getReqEquipment = req_equip_list => ({
   type: GET_REQ_EQUIPMENT,
   req_equip_list,
+});
+
+// 요청 장비 목록
+export const getMyEquipmentAsync = () => ({
+  type: GET_MY_EQUIPMENT_ASYNC,
 });
 
 // 나의 장비 목록 조회

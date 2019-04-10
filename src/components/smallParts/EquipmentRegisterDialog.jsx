@@ -343,7 +343,7 @@ class EquipmentRegisterDialog extends React.Component {
           fullWidth
           open={open}
           onClose={handleClose}
-          scroll={scroll}
+          scroll="paper"
           disableBackdropClick
         >
           <Divider />

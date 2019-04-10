@@ -12,8 +12,9 @@ import EquipmentForm from 'components/middleParts/EquipmentForm';
 import {
   setEquipmentList,
   addEquipmentList,
-  setEquipmentInfo,
+  setEquipmentInfoAsync,
 } from 'store/modules/equipment';
+import { modifyOpenAction } from 'store/modules/common';
 
 import EquipmentRegisterDialog from '../smallParts/EquipmentRegisterDialog';
 import EquipmentModifyDialog from '../smallParts/EquipmentModifyDialog';
@@ -29,7 +30,6 @@ class EquipmentPage extends React.Component {
   state = {
     search_info: {},
     open: false,
-    modifyOpen: false,
     reasonOpen: false,
     scroll: 'paper',
     selectEquipNo: '',
@@ -124,43 +124,6 @@ class EquipmentPage extends React.Component {
       });
   };
 
-  // 장비 상세 조회
-  getEquipInfo = async equip_no => {
-    const params = {
-      access_token: localStorage.getItem('access_token'),
-      equip_no,
-    };
-
-    // 요청 대상 장비 목록 조회(검색)API
-    await axios
-      .get('http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/equip/api-300-0002', {
-        params: {
-          params: JSON.stringify(params),
-        },
-        headers: {
-          'contents-type': 'application/json',
-        },
-      })
-      .then(async json => {
-        localStorage.setItem('access_token', json.data.data.access_token);
-        console.log('json :: ', json);
-        await this.props.setEquipmentInfo(json.data.data.equip_info);
-      })
-      .catch(err => {
-        console.log(err);
-
-        // Token error List
-        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
-
-        if (errCodes.indexOf(err.response.data.code) !== -1) {
-          alert(err.response.data.message);
-          window.location.href = '/login';
-        } else {
-          alert(err.response.data.message);
-        }
-      });
-  };
-
   // search_info 변경
   changeSearchInfo = search_info => {
     // state에 search_info 저장
@@ -180,19 +143,17 @@ class EquipmentPage extends React.Component {
   };
 
   // 장비 수정 다이얼로그 오픈
-  modifyDialogOpen = (scroll, selectEquipNo) => () => {
+  modifyDialogOpen = selectEquipNo => () => {
     // 선택한 장비가 있을 경우
     if (selectEquipNo) {
-      // 장비 상세 정보 호출
-      this.getEquipInfo(selectEquipNo).then(() => {
-        this.setState({ modifyOpen: true, scroll, selectEquipNo });
-      });
+      // 장비 상세 정보 액션
+      this.props.setEquipmentInfoAsync(selectEquipNo);
     }
   };
 
   // 장비 수정 다이얼로그 클로즈
   modifyDialogClose = () => {
-    this.setState({ modifyOpen: false, selectEquipNo: '' });
+    this.props.modifyOpenAction(false);
   };
 
   // 장비 요청 사유 다이얼로그 오픈
@@ -206,8 +167,14 @@ class EquipmentPage extends React.Component {
   };
 
   render() {
-    const { classes, equip_list, list_load_status, equip_info } = this.props;
-    // const { open } = this.state;
+    const {
+      classes,
+      equip_list,
+      list_load_status,
+      equip_info,
+      modifyOpen,
+    } = this.props;
+
     return (
       <React.Fragment>
         <Typography className={classes.title}>장비 관리</Typography>
@@ -236,9 +203,9 @@ class EquipmentPage extends React.Component {
           ''
         )}
 
-        {this.state.modifyOpen && (
+        {modifyOpen && (
           <EquipmentModifyDialog
-            open={this.state.modifyOpen}
+            open={modifyOpen}
             scroll={this.state.scroll}
             handleClose={this.modifyDialogClose}
             equip_info={equip_info}
@@ -268,15 +235,18 @@ const mapStateToProps = state => {
     rows: state.equipment.rows,
     _search: state.equipment._search,
     list_load_status: state.equipment.list_load_status,
+    modifyOpen: state.common.modifyOpen,
   };
 };
 
 // action을 dispatch하는 펑션을 로컬에 있는 props로 매핑
 const mapActionToProps = dispatch => {
   return {
+    setEquipmentInfoAsync: equip_no =>
+      dispatch(setEquipmentInfoAsync(equip_no)),
     setEquipmentList: response => dispatch(setEquipmentList(response)),
     addEquipmentList: response => dispatch(addEquipmentList(response)),
-    setEquipmentInfo: equip_info => dispatch(setEquipmentInfo(equip_info)),
+    modifyOpenAction: boolean => dispatch(modifyOpenAction(boolean)),
   };
 };
 

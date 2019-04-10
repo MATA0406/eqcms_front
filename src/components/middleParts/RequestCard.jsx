@@ -11,6 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import orange from '@material-ui/core/colors/orange';
 import ReqEquipDialog from 'components/smallParts/ReqEquipDialog';
 
+import { searchOpenAction } from 'store/modules/common';
 import { getReqTargetEquipment } from 'store/modules/home';
 
 const styles = {
@@ -31,14 +32,9 @@ const styles = {
 };
 
 class RequestCard extends React.Component {
-  state = {
-    open: false,
-    scroll: 'paper',
-  };
-
   // 다이얼로그 오픈
-  handleClickOpen = scroll => () => {
-    this.setState({ open: true, scroll });
+  handleClickOpen = () => () => {
+    this.props.searchOpenAction(true);
   };
 
   // 다이얼로그 클로즈
@@ -49,11 +45,11 @@ class RequestCard extends React.Component {
     };
 
     this.props.getReqTargetEquipment(data);
-    this.setState({ open: false });
+    this.props.searchOpenAction(false);
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, reqSearchOpen } = this.props;
 
     return (
       <Fragment>
@@ -81,11 +77,7 @@ class RequestCard extends React.Component {
           </Card>
         </Grid>
 
-        <ReqEquipDialog
-          open={this.state.open}
-          scroll={this.state.scroll}
-          handleClose={this.handleClose}
-        />
+        <ReqEquipDialog open={reqSearchOpen} handleClose={this.handleClose} />
       </Fragment>
     );
   }
@@ -95,17 +87,25 @@ RequestCard.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
+// store에 있는 값을 props로 내려받는다.
+const mapStateToProps = state => {
+  return {
+    reqSearchOpen: state.common.reqSearchOpen,
+  };
+};
+
 // action을 dispatch하는 펑션을 로컬에 있는 props로 매핑
 const mapActionToProps = dispatch => {
   return {
     getReqTargetEquipment: response =>
       dispatch(getReqTargetEquipment(response)),
+    searchOpenAction: boolean => dispatch(searchOpenAction(boolean)),
   };
 };
 
 export default withStyles(styles)(
   connect(
-    null,
+    mapStateToProps,
     mapActionToProps,
   )(withRouter(RequestCard)),
 );
