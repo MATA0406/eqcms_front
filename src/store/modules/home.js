@@ -4,8 +4,11 @@ const GET_REQ_EQUIPMENT = 'home/GET_REQ_EQUIPMENT';
 export const GET_MY_EQUIPMENT_ASYNC = 'GET_MY_EQUIPMENT_ASYNC';
 const GET_MY_EQUIPMENT = 'home/GET_MY_EQUIPMENT';
 const GET_REQ_TARGET_EQUIPMENT = 'home/GET_REQ_TARGET_EQUIPMENT';
+// export const GET_REQ_TARGET_EQUIPMENT_ASYNC =
+//   'home/GET_REQ_TARGET_EQUIPMENT_ASYNC';
 const ADD_REQ_TARGET_EQUIPMENT = 'home/ADD_REQ_TARGET_EQUIPMENT';
 const GET_EQUIP_TP_CD_LIST = 'home/GET_EQUIP_TP_CD_LIST';
+export const GET_EQUIP_TP_CD_LIST_ASYNC = 'home/GET_EQUIP_TP_CD_LIST_ASYNC';
 
 // ---------------------- 액션 생성함수 정의 --------------------------
 // 요청 장비 목록
@@ -37,6 +40,12 @@ export const getReqTargetEquipment = response => ({
   equip_list: response.equip_list,
 });
 
+// 요청 대상 장비 목록 조회(검색) - 액션
+// export const getReqTargetEquipmentAsync = e => ({
+//   type: GET_REQ_TARGET_EQUIPMENT_ASYNC,
+//   e,
+// });
+
 // 요청 대상 장비 목록 조회(스크롤)
 export const addReqTargetEquipment = response => ({
   type: ADD_REQ_TARGET_EQUIPMENT,
@@ -47,6 +56,12 @@ export const addReqTargetEquipment = response => ({
 // Common - 장비 구분 코드 목록 조회
 export const getEquipTpCdList = equip_tp_cd_list => ({
   type: GET_EQUIP_TP_CD_LIST,
+  equip_tp_cd_list,
+});
+
+// Common - 장비 구분 코드 목록 조회 액션
+export const getEquipTpCdListAsync = equip_tp_cd_list => ({
+  type: GET_EQUIP_TP_CD_LIST_ASYNC,
   equip_tp_cd_list,
 });
 

@@ -84,6 +84,7 @@ class HomePage extends React.Component {
         ) : (
           ''
         )}
+
         {modifyOpen && (
           <EquipmentModifyDialog
             open={modifyOpen}

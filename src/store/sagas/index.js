@@ -58,6 +58,18 @@ function* getCommonCode(action) {
   }
 }
 
+// 공통 코드
+function* getEquipTpCdList() {
+  try {
+    // 공통 코드 API
+    const equip_tp_cd_list = yield call(common.getEquipTpCdList);
+    console.log('equip_tp_cd_list :: ', equip_tp_cd_list);
+    yield put(homeActions.getEquipTpCdList(equip_tp_cd_list));
+  } catch (e) {
+    console.log('saga Err!! ::', e);
+  }
+}
+
 // ============================== HOME =====================================
 // 요청 장비 목록
 function* getReqEquipmentList() {
@@ -80,6 +92,18 @@ function* getMyEquipmentList() {
     console.log('saga Err!! ::', e);
   }
 }
+
+// 요청 대상 장비 목록 조회(검색)
+// function* getReqTargetEquipment(action) {
+//   try {
+//     console.log(action);
+//     // 요청 대상 장비 목록 조회(검색) API
+//     const response = yield call(common.getReqTargetEquipment, action.e);
+//     yield put(homeActions.getReqTargetEquipment(response));
+//   } catch (e) {
+//     console.log('saga Err!! ::', e);
+//   }
+// }
 
 // ============================== EQUIPMENT =====================================
 // 요청 장비 목록
@@ -106,10 +130,17 @@ function* root() {
   yield takeLatest(loginActions.PW_UPDATE, pwUpdate);
   // 공통코드 조회
   yield takeEvery(commonActions.SET_COMMON_CD_LIST_ASYNC, getCommonCode);
+  // 장비 구분 코드 목록 조회 액션
+  yield takeEvery(homeActions.GET_EQUIP_TP_CD_LIST_ASYNC, getEquipTpCdList);
   // 요청장비목록 조회(HOME)
   yield takeEvery(homeActions.GET_REQ_EQUIPMENT_ASYNC, getReqEquipmentList);
   // 나의장비목록 조회(HOME)
   yield takeEvery(homeActions.GET_MY_EQUIPMENT_ASYNC, getMyEquipmentList);
+  // 요청 대상 장비 목록 조회(검색)
+  // yield takeEvery(
+  //   homeActions.GET_REQ_TARGET_EQUIPMENT_ASYNC,
+  //   getReqTargetEquipment,
+  // );
   // 장비 상세 조회
   yield takeEvery(equipmentActions.SET_EQUIPMENT_INFO_ASYNC, getEquipmentInfo);
 }

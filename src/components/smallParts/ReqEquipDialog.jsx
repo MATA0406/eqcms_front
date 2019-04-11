@@ -22,7 +22,7 @@ import Grid from '@material-ui/core/Grid';
 import blue from '@material-ui/core/colors/blue';
 
 import {
-  getEquipTpCdList,
+  getEquipTpCdListAsync,
   getReqTargetEquipment,
   addReqTargetEquipment,
 } from 'store/modules/home';
@@ -78,47 +78,9 @@ class ReqEquipDialog extends React.Component {
   };
 
   componentDidMount() {
-    this.getEquipTpCdList();
+    // 장비 구분 코드 목록 조회 액션
+    this.props.getEquipTpCdListAsync();
   }
-
-  // 장비 구분 코드 목록 조회
-  getEquipTpCdList = async () => {
-    const params = {
-      access_token: localStorage.getItem('access_token'),
-    };
-
-    // 장비 구분 코드 목록 조회API
-    await axios
-      .get(
-        'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/common/code/api-101-0002',
-        {
-          params: {
-            params: JSON.stringify(params),
-          },
-          headers: {
-            'contents-type': 'application/json',
-          },
-        },
-      )
-      .then(json => {
-        localStorage.setItem('access_token', json.data.data.access_token);
-        this.props.getEquipTpCdList(json.data.data.equip_tp_cd_list);
-      })
-      .catch(err => {
-        console.log(err.response.data);
-
-        // Token error List
-        const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
-
-        if (errCodes.indexOf(err.response.data.code) !== -1) {
-          alert(err.response.data.message);
-          // this.props.history.push('/login');
-          window.location.href = '/login';
-        } else {
-          alert(err.response.data.message);
-        }
-      });
-  };
 
   // 요청 대상 장비 목록 조회(검색)
   reqEquipSearch = async e => {
@@ -377,8 +339,7 @@ const mapStateToProps = state => {
 // action을 dispatch하는 펑션을 로컬에 있는 props로 매핑
 const mapActionToProps = dispatch => {
   return {
-    getEquipTpCdList: equip_tp_cd_list =>
-      dispatch(getEquipTpCdList(equip_tp_cd_list)),
+    getEquipTpCdListAsync: () => dispatch(getEquipTpCdListAsync()),
     getReqTargetEquipment: response =>
       dispatch(getReqTargetEquipment(response)),
     addReqTargetEquipment: response =>

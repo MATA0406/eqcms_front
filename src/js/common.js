@@ -130,6 +130,45 @@ export const commonCodeAPI = action => {
     });
 };
 
+// 장비 구분 코드 목록 조회(공통)
+export const getEquipTpCdList = () => {
+  const params = {
+    access_token: localStorage.getItem('access_token'),
+  };
+
+  // 장비 구분 코드 목록 조회API
+  return axios
+    .get(
+      'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/common/code/api-101-0002',
+      {
+        params: {
+          params: JSON.stringify(params),
+        },
+        headers: {
+          'contents-type': 'application/json',
+        },
+      },
+    )
+    .then(json => {
+      localStorage.setItem('access_token', json.data.data.access_token);
+      return json.data.data.equip_tp_cd_list;
+    })
+    .catch(err => {
+      console.log(err.response.data);
+
+      // Token error List
+      const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+      if (errCodes.indexOf(err.response.data.code) !== -1) {
+        alert(err.response.data.message);
+        // this.props.history.push('/login');
+        window.location.href = '/login';
+      } else {
+        alert(err.response.data.message);
+      }
+    });
+};
+
 // 요청 장비 목록 조회API
 export const getReqEquipmentListAPI = () => {
   const params = {
@@ -189,6 +228,59 @@ export const getMyEquipmentListAPI = () => {
     .then(json => {
       localStorage.setItem('access_token', json.data.data.access_token);
       return json.data.data;
+    })
+    .catch(err => {
+      console.log(err.response.data);
+
+      // Token error List
+      const errCodes = ['S3100', 'S3110', 'S3120', 'S3121', 'S3122'];
+
+      if (errCodes.indexOf(err.response.data.code) !== -1) {
+        alert(err.response.data.message);
+        window.location.href = '/login';
+      } else {
+        alert(err.response.data.message);
+      }
+    });
+};
+
+export const getReqTargetEquipment = e => {
+  console.log('e :: ', e);
+  // 검색 정보
+  const search_info = {
+    equip_tp_cd: e.target.equipTpCd.value,
+    keyword: e.target.keyword.value,
+  };
+
+  const params = {
+    access_token: localStorage.getItem('access_token'),
+    page: 1,
+    rows: this.props.rows,
+    _search: this.props._search,
+    search_info,
+  };
+
+  // 요청 대상 장비 목록 조회(검색)API
+  return axios
+    .get(
+      'http://d3rg13r6ps3p6u.cloudfront.net/apis/bo/dashboard/api-200-0002',
+      {
+        params: {
+          params: JSON.stringify(params),
+        },
+        headers: {
+          'contents-type': 'application/json',
+        },
+      },
+    )
+    .then(json => {
+      localStorage.setItem('access_token', json.data.data.access_token);
+      return json.data.data;
+
+      // state에 search_info 저장
+      // this.setState(() => ({
+      //   search_info,
+      // }));
     })
     .catch(err => {
       console.log(err.response.data);

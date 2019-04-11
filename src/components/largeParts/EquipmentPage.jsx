@@ -144,9 +144,7 @@ class EquipmentPage extends React.Component {
 
   // 장비 수정 다이얼로그 오픈
   modifyDialogOpen = selectEquipNo => () => {
-    // 선택한 장비가 있을 경우
     if (selectEquipNo) {
-      // 장비 상세 정보 액션
       this.props.setEquipmentInfoAsync(selectEquipNo);
     }
   };
