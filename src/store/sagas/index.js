@@ -11,9 +11,11 @@ function* goLogin(action) {
   try {
     // 로그인 API
     const user = yield call(common.goLoginAPI, action);
-    // 로그인 액션
-    yield put(loginActions.goLoginAsync(user));
-    yield (window.location.href = '/');
+    if (user) {
+      // 로그인 액션
+      yield put(loginActions.goLoginAsync(user));
+      yield (window.location.href = '/');
+    }
   } catch (e) {
     console.log('saga Err!! ::', e);
   }
@@ -24,7 +26,6 @@ function* goLogout() {
   try {
     // 로그아웃 API
     yield call(common.goLogoutAPI);
-    yield (window.location.href = '/login');
   } catch (e) {
     console.log('saga Err!! ::', e);
   }

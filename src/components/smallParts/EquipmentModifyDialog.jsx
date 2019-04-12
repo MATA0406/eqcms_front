@@ -277,7 +277,6 @@ class EquipmentModifyDialog extends React.Component {
         stat_cd: this.state.statCd,
         img_url: this.state.imgUrl,
       };
-      console.log('this.state.imgUrl :: ', this.state.imgUrl);
 
       // 장비 등록 API
       await axios
@@ -538,6 +537,7 @@ class EquipmentModifyDialog extends React.Component {
                   variant="outlined"
                   onChange={this._handleEquipNmChange}
                   value={this.state.equipNm}
+                  required
                 />
               </Grid>
               <Grid
@@ -563,6 +563,7 @@ class EquipmentModifyDialog extends React.Component {
                   }}
                   margin="normal"
                   variant="outlined"
+                  required
                 >
                   {equip_tp_cd_list.map(item => (
                     <MenuItem value={item.equip_tp_cd} key={item.equip_tp_cd}>
@@ -588,6 +589,7 @@ class EquipmentModifyDialog extends React.Component {
                   variant="outlined"
                   onChange={this._handleSerialNoChange}
                   value={this.state.serialNo}
+                  required
                 />
               </Grid>
               <Grid

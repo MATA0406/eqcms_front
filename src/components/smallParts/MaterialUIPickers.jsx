@@ -16,6 +16,7 @@ function MaterialUIPickers(props) {
         onChange={handleDateChange}
         format="YYYY-MM-dd"
         disabled={dateDisabled}
+        required
       />
     </MuiPickersUtilsProvider>
   );

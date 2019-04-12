@@ -35,6 +35,7 @@ export function goLoginAPI(action) {
       );
       localStorage.setItem('login_nm', item.data.data.login_info.login_nm);
       localStorage.setItem('login_id', item.data.data.login_info.login_id);
+
       if (action.check.checked) {
         // name=Ethan, 7일 뒤 만료됨
         setCookie('login_id', item.data.data.login_info.login_id, 7);
@@ -45,7 +46,8 @@ export function goLoginAPI(action) {
       return item.data.data.login_info;
     })
     .catch(err => {
-      alert(err);
+      console.log(err);
+      alert(err.response.data.message);
     });
 }
 
@@ -63,6 +65,7 @@ export function goLogoutAPI() {
     )
     .then(() => {
       localStorage.clear();
+      window.location.href = '/login';
     })
     .catch(err => {
       // Token error List
@@ -73,7 +76,7 @@ export function goLogoutAPI() {
         window.location.href = '/login';
       } else {
         console.log(err);
-        alert(err);
+        alert(err.response.data.message);
       }
     });
 }

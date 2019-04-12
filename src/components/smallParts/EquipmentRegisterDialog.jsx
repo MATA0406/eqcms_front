@@ -384,6 +384,7 @@ class EquipmentRegisterDialog extends React.Component {
                   <input
                     type="file"
                     onChange={e => this._handleImageChange(e)}
+                    required
                   />
                 </Button>
               </Grid>
@@ -404,6 +405,7 @@ class EquipmentRegisterDialog extends React.Component {
                   variant="outlined"
                   onChange={this._handleEquipNmChange}
                   value={this.state.equipNm}
+                  required
                 />
               </Grid>
               <Grid
@@ -429,6 +431,7 @@ class EquipmentRegisterDialog extends React.Component {
                   }}
                   margin="normal"
                   variant="outlined"
+                  required
                 >
                   {equip_tp_cd_list.map(item => (
                     <MenuItem value={item.equip_tp_cd} key={item.equip_tp_cd}>
@@ -454,6 +457,7 @@ class EquipmentRegisterDialog extends React.Component {
                   variant="outlined"
                   onChange={this._handleSerialNoChange}
                   value={this.state.serialNo}
+                  required
                 />
               </Grid>
               <Grid
