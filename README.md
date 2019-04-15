@@ -2,7 +2,7 @@
 
 ### `사용한 라이브러리`
 
-JavaScript, React, Redux, Material-UI, Creat-React-App, WebPack, Babel 등
+JavaScript, React, Redux,, Redux-saga, Material-UI, Creat-React-App, axios, Material-UI, WebPack, Babel 등
 
 ### `도메인`
 
